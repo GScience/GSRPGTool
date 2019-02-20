@@ -91,7 +91,7 @@ namespace RPGTool
             {
                 if (_nowSpriteFace != faceTo)
                 {
-                    GetComponent<SpriteRenderer>().sprite = GetSprite((int) faceTo * 3 + 3);
+                    GetComponent<SpriteRenderer>().sprite = GetSprite(1 + (int) faceTo * 3);
                     _nowSpriteFace = faceTo;
                 }
             }

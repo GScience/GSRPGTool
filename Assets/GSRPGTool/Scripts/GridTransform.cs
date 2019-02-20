@@ -43,6 +43,16 @@ namespace RPGTool
 
         public SpriteRenderer SpriteRenderer { get; private set; }
 
+        public Camera worldCamera;
+
+        //单位移动距离，与屏幕大小有关
+        private Vector2 _unitMovement;
+
+        //真实坐标，不考虑按照像素移动
+        private Vector2 _realPos;
+
+        public Vector2 MovingFloatPos => new Vector2(_realPos.x - offset.x, _realPos.y - offset.y);
+
         private void Awake()
         {
             _grid = GetComponentInParent<Grid>();
@@ -50,6 +60,16 @@ namespace RPGTool
 
             if (_grid)
                 GridSize = _grid.cellSize;
+
+            if (worldCamera == null)
+                worldCamera = Camera.main;
+
+            var camerapixelRect = worldCamera.pixelRect;
+            var cameraRect =
+                worldCamera.ScreenToWorldPoint(new Vector3(camerapixelRect.width, camerapixelRect.height)) -
+                worldCamera.ScreenToWorldPoint(Vector3.zero);
+
+            _unitMovement = new Vector2(cameraRect.x / camerapixelRect.width, cameraRect.y / camerapixelRect.height);
 
 #if UNITY_EDITOR
             if (!Application.isPlaying)
@@ -76,10 +96,20 @@ namespace RPGTool
                 IsMoving = true;
 
             //根据物体坐标设置偏移
-            transform.position =
-                new Vector3(position.x + offset.x + _movementOffset.x, position.y + offset.y + _movementOffset.y, 0) *
-                GridSize;
-            
+            _realPos = new Vector3(position.x + offset.x + _movementOffset.x, position.y + offset.y + _movementOffset.y, 0) * GridSize;
+
+            Vector3 newPos = _realPos;
+#if UNITY_EDITOR
+            if (Application.isPlaying)
+#endif
+                newPos = new Vector3(
+                    _realPos.x - _realPos.x % _unitMovement.x,
+                    _realPos.y - _realPos.y % _unitMovement.y,
+                    _realPos.y);
+
+            //像素整数倍
+            transform.position = newPos;
+
             //设置深度
             if (SpriteRenderer != null)
                 SpriteRenderer.sortingOrder = int.MaxValue - (int)transform.position.y;
@@ -171,7 +201,5 @@ namespace RPGTool
 
             _movementOffset = Vector2.zero;
         }
-
-        public Vector2 MovingFloatPos => new Vector2(transform.position.x - offset.x, transform.position.y - offset.y);
     }
 }
