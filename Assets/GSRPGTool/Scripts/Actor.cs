@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GSRPGTool;
-using GSRPGTool.Physical;
+using RPGTool;
+using RPGTool.Physical;
 using UnityEngine;
 
 namespace RPGTool

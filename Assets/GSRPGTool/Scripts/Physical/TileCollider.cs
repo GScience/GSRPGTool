@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using RPGTool;
 using UnityEngine;
 
-namespace GSRPGTool.Physical
+namespace RPGTool.Physical
 {
     public class TileCollider : MonoBehaviour
     {
