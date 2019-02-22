@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RPGTool;
-using RPGTool.Physical;
+﻿using RPGTool.Physical;
 using UnityEngine;
 
 namespace RPGTool
@@ -12,21 +6,21 @@ namespace RPGTool
     public class GameManager : MonoBehaviour
     {
         /// <summary>
-        /// 全局GameManager
+        ///     全局GameManager
         /// </summary>
         public static GameManager globalGameManager;
 
         /// <summary>
-        /// 玩家
+        ///     玩家
         /// </summary>
         public TileRigidbody player;
 
         /// <summary>
-        /// 玩家坐标
+        ///     玩家坐标
         /// </summary>
         public Vector2Int playerPosition { get; private set; }
 
-        void Awake()
+        private void Awake()
         {
             if (globalGameManager != null)
                 Destroy(this);
@@ -34,15 +28,15 @@ namespace RPGTool
             DontDestroyOnLoad(gameObject);
         }
 
-        void Update()
+        private void Update()
         {
             UpdatePlayerTransform();
         }
 
         /// <summary>
-        /// 刷新玩家的移动信息
+        ///     刷新玩家的移动信息
         /// </summary>
-        void UpdatePlayerTransform()
+        private void UpdatePlayerTransform()
         {
             if (player == null)
                 return;

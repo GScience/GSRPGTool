@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RPGTool;
 using UnityEngine;
 
 namespace RPGTool.Physical
@@ -14,29 +10,32 @@ namespace RPGTool.Physical
 
         public List<Vector2Int> JointPositions { get; private set; } = new List<Vector2Int>();
 
-        void Awake()
+        private void Awake()
         {
             GridTransform = GetComponent<GridTransform>();
         }
-        void Update()
+
+        private void Update()
         {
             if (GridTransform.IsMoving)
             {
-                var posXBig = (int)Math.Ceiling(GridTransform.MovingFloatPos.x);
-                var posXSmall = (int)Math.Floor(GridTransform.MovingFloatPos.x);
-                var posYBig = (int)Math.Ceiling(GridTransform.MovingFloatPos.y);
-                var posYSmall = (int)Math.Floor(GridTransform.MovingFloatPos.y);
+                var posXBig = (int) Math.Ceiling(GridTransform.MovingFloatPos.x);
+                var posXSmall = (int) Math.Floor(GridTransform.MovingFloatPos.x);
+                var posYBig = (int) Math.Ceiling(GridTransform.MovingFloatPos.y);
+                var posYSmall = (int) Math.Floor(GridTransform.MovingFloatPos.y);
 
                 var newJointPosition = new List<Vector2Int>();
 
-                for (var x= posXSmall; x<= posXBig;++x)
+                for (var x = posXSmall; x <= posXBig; ++x)
                 for (var y = posYSmall; y <= posYBig; ++y)
                     newJointPosition.Add(new Vector2Int(x, y));
 
                 UpdateJointPos(newJointPosition);
             }
             else
+            {
                 UpdateJointPos(new List<Vector2Int> {GridTransform.position});
+            }
         }
 
         private void UpdateJointPos(List<Vector2Int> newJointPosition)

@@ -11,30 +11,30 @@ namespace RPGTool
     public class GridTransform : MonoBehaviour
     {
         /// <summary>
-        /// 移动偏移量
-        /// </summary>
-        private Vector2 _movementOffset = Vector2.zero;
-
-        /// <summary>
-        /// 移动协程
-        /// </summary>
-        public Coroutine MovingCoroutine { get; private set; }
-
-        /// <summary>
-        /// 所在表格
+        ///     所在表格
         /// </summary>
         private Grid _grid;
 
         /// <summary>
-        /// 格子内的偏移量
+        ///     移动偏移量
+        /// </summary>
+        private Vector2 _movementOffset = Vector2.zero;
+
+        /// <summary>
+        ///     格子内的偏移量
         /// </summary>
         [Tooltip("角色位置偏移")] public Vector2 offset = new Vector2(0.5f, 0.5f);
 
         /// <summary>
-        /// 角色的格子位置
-        /// 调用<see cref="Move"/>或者<see cref="MoveTo"/>的时候修改此变量不会产生效果
+        ///     角色的格子位置
+        ///     调用<see cref="Move" />或者<see cref="MoveTo" />的时候修改此变量不会产生效果
         /// </summary>
         [Tooltip("角色网格坐标")] public Vector2Int position;
+
+        /// <summary>
+        ///     移动协程
+        /// </summary>
+        public Coroutine MovingCoroutine { get; private set; }
 
         //是否正在移动
         public bool IsMoving { get; private set; }
@@ -75,14 +75,17 @@ namespace RPGTool
                 _movementOffset = Vector2.zero;
             }
             else if (MovingCoroutine != null)
+            {
                 IsMoving = true;
+            }
 
             //移动
-            transform.position = new Vector3(position.x + offset.x + _movementOffset.x, position.y + offset.y + _movementOffset.y, 0) * GridSize;
+            transform.position = new Vector3(position.x + offset.x + _movementOffset.x,
+                                     position.y + offset.y + _movementOffset.y, 0) * GridSize;
 
             //设置深度
             if (SpriteRenderer != null)
-                SpriteRenderer.sortingOrder = int.MaxValue - (int)transform.position.y;
+                SpriteRenderer.sortingOrder = int.MaxValue - (int) transform.position.y;
         }
 
         /// <summary>
@@ -157,19 +160,8 @@ namespace RPGTool
 
                 yield return 0;
             }
+
             MovingCoroutine = null;
-        }
-
-        /// <summary>
-        /// 重置移动状态
-        /// 即取消当前移动任务
-        /// </summary>
-        public void ResetMovement()
-        {
-            if (MovingCoroutine != null)
-                StopCoroutine(MovingCoroutine);
-
-            _movementOffset = Vector2.zero;
         }
     }
 }

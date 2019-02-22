@@ -1,61 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RPGTool;
-using RPGTool.Physical;
+﻿using RPGTool.Physical;
 using UnityEngine;
 
 namespace RPGTool
 {
-    [ExecuteInEditMode,RequireComponent(typeof(SpriteRenderer))]
+    [ExecuteInEditMode]
+    [RequireComponent(typeof(SpriteRenderer))]
     public class Actor : MonoBehaviour
     {
         /// <summary>
-        /// 动画速度
-        /// </summary>
-        public float animationSpeed = 1;
-
-        /// <summary>
-        /// 角色面向
+        ///     角色面向
         /// </summary>
         public enum Face
         {
-            Up = 3, Down = 0, Left = 1, Right = 2
+            Up = 3,
+            Down = 0,
+            Left = 1,
+            Right = 2
         }
 
         /// <summary>
-        /// 角色的图像
+        ///     分割后的角色图像
         /// </summary>
-        public Texture2D actorTexture;
-
-        public int pixelPerTexture = 32;
-
-        public Vector2 pivot = new Vector2(0.5f,0.25f);
-
-        /// <summary>
-        /// 角色的面向
-        /// </summary>
-        public Face faceTo = Face.Down;
-
-        /// <summary>
-        /// 角色图像索引
-        /// </summary>
-        private int _movingStage;
+        private readonly Sprite[] _actorSprites = new Sprite[12];
 
         private float _deltaTimeFromChangeIndex = 3;
 
         /// <summary>
-        /// 分割后的角色图像
+        ///     角色图像索引
         /// </summary>
-        private readonly Sprite[] _actorSprites = new Sprite[12];
+        private int _movingStage;
+#if UNITY_EDITOR
+        private Face _nowSpriteFace = Face.Up;
+#endif
 
-        public GridTransform GridTransform { get; private set;}
+        /// <summary>
+        ///     角色的图像
+        /// </summary>
+        public Texture2D actorTexture;
+
+        /// <summary>
+        ///     动画速度
+        /// </summary>
+        public float animationSpeed = 1;
+
+        /// <summary>
+        ///     角色的面向
+        /// </summary>
+        public Face faceTo = Face.Down;
+
+        public Vector2 pivot = new Vector2(0.5f, 0.25f);
+
+        public int pixelPerTexture = 32;
+
+        public GridTransform GridTransform { get; private set; }
         public SpriteRenderer SpriteRenderer { get; private set; }
         public TileCollider TileCollider { get; private set; }
 
-        void Awake()
+        private void Awake()
         {
 #if UNITY_EDITOR
             if (!Application.isPlaying)
@@ -72,7 +73,7 @@ namespace RPGTool
             TileCollider = GetComponent<TileCollider>();
         }
 
-        Sprite GetSprite(int index)
+        private Sprite GetSprite(int index)
         {
             return Sprite.Create(actorTexture,
                 new Rect(
@@ -81,10 +82,8 @@ namespace RPGTool
                 pivot,
                 pixelPerTexture);
         }
-#if UNITY_EDITOR
-        private Face _nowSpriteFace = Face.Up;
-#endif
-        void Update()
+
+        private void Update()
         {
 #if UNITY_EDITOR
             if (!Application.isPlaying)
@@ -97,11 +96,13 @@ namespace RPGTool
             }
             else
 #endif
+            {
                 SwitchNextSprite(!GridTransform || !GridTransform.IsMoving);
+            }
         }
 
         /// <summary>
-        /// 获取下一步的Sprite
+        ///     获取下一步的Sprite
         /// </summary>
         /// <param name="isStop">是否停止</param>
         /// <returns></returns>
@@ -139,7 +140,8 @@ namespace RPGTool
                         imageIndex = 1;
                         break;
                 }
-                SpriteRenderer.sprite = _actorSprites[imageIndex + (int)faceTo * 3];
+
+                SpriteRenderer.sprite = _actorSprites[imageIndex + (int) faceTo * 3];
             }
         }
     }

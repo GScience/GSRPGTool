@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace RPGTool.Tiles
@@ -20,7 +17,7 @@ namespace RPGTool.Tiles
             if (movementInfoTileSprite == null)
             {
                 var spriteTexture = new Texture2D(1, 1);
-                spriteTexture.SetPixel(0,0,Color.white);
+                spriteTexture.SetPixel(0, 0, Color.white);
                 spriteTexture.Apply();
                 movementInfoTileSprite =
                     Sprite.Create(spriteTexture, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1);

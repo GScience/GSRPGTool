@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RPGTool.Tiles;
+﻿using RPGTool.Tiles;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -14,7 +9,7 @@ namespace RPGTool
     {
         public Tilemap Tilemap { get; private set; }
 
-        void Awake()
+        private void Awake()
         {
             Tilemap = GetComponent<Tilemap>();
         }

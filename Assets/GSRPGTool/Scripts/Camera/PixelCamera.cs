@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace RPGTool.Camera
 {
@@ -16,7 +11,7 @@ namespace RPGTool.Camera
 
         public UnityEngine.Camera Camera { get; private set; }
 
-        void Awake()
+        private void Awake()
         {
             Camera = GetComponent<UnityEngine.Camera>();
 
@@ -27,7 +22,8 @@ namespace RPGTool.Camera
 
             _unitMovement = new Vector2(cameraRect.x / camerapixelRect.width, cameraRect.y / camerapixelRect.height);
         }
-        void LateUpdate()
+
+        private void LateUpdate()
         {
             transform.position = new Vector3(
                 transform.position.x - transform.position.x % _unitMovement.x,

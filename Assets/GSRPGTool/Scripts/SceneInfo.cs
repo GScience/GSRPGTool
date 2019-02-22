@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RPGTool;
-using UnityEngine;
-using UnityEngine.Tilemaps;
+﻿using UnityEngine;
 
 namespace RPGTool
 {
@@ -14,7 +7,7 @@ namespace RPGTool
         public static SceneInfo sceneInfo;
         public MovementInfoTilemap movementInfoTilemap;
 
-        void Awake()
+        private void Awake()
         {
             sceneInfo = this;
         }

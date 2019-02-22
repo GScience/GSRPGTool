@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RPGTool.Physical;
 using UnityEngine;
 
 namespace RPGTool.Physical
@@ -11,8 +6,10 @@ namespace RPGTool.Physical
     [RequireComponent(typeof(TileCollider), typeof(GridTransform))]
     public class TileRigidbody : MonoBehaviour
     {
+        private Actor.Face? _movement;
+
         /// <summary>
-        /// 刚体速度
+        ///     刚体速度
         /// </summary>
         public float speed = 2;
 
@@ -20,24 +17,22 @@ namespace RPGTool.Physical
         public TileCollider TileCollider { get; private set; }
         public Actor Actor { get; private set; }
 
-        private Actor.Face? _movement;
-
-        void Awake()
+        private void Awake()
         {
             GridTransform = GetComponent<GridTransform>();
             TileCollider = GetComponent<TileCollider>();
             Actor = GetComponent<Actor>();
         }
 
-        void Update()
+        private void Update()
         {
             if (Actor != null)
                 Actor.animationSpeed = speed;
         }
 
         /// <summary>
-        /// 向指定方向移动一次
-        /// 转向也算一次
+        ///     向指定方向移动一次
+        ///     转向也算一次
         /// </summary>
         /// <param name="direction">方向，默认为null</param>
         public void SetMoveDirection(Actor.Face? direction = null)
@@ -45,7 +40,7 @@ namespace RPGTool.Physical
             _movement = direction;
         }
 
-        void LateUpdate()
+        private void LateUpdate()
         {
             if (GridTransform.MovingCoroutine == null && _movement != null)
                 UpdateMovement(_movement.Value);
@@ -75,8 +70,7 @@ namespace RPGTool.Physical
                     default:
                         throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
                 }
-            else
-            if (Actor != null)
+            else if (Actor != null)
                 Actor.faceTo = direction;
         }
     }
