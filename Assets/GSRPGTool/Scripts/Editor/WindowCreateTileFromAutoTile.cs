@@ -19,11 +19,12 @@ namespace RPGTool.Editor
             myWindow.Show();//显示创建的自定义窗口
         }
 
-        private Sprite _selectedSprite;
+        private Texture2D _selectedTexture;
         private int _autoTileType;
         private string _tileNames;
+        private int _pixelsPerUnit = 48;
 
-        private static Sprite GetSubSprite(Sprite sprite, int index, Vector2Int gridCount)
+        private static Rect GetSubSpriteRect(Sprite sprite, int index, Vector2Int gridCount)
         {
             var rect = sprite.rect;
 
@@ -34,7 +35,13 @@ namespace RPGTool.Editor
             rect.y += rect.height * y / gridCount.y;
             rect.height = sprite.rect.height / gridCount.y;
             rect.width = sprite.rect.width / gridCount.x;
-            return Sprite.Create(sprite.texture, rect, new Vector2(0.5f, 0.5f), sprite.pixelsPerUnit);
+            return rect;
+        }
+
+        private static Sprite GetSubSprite(Sprite sprite, int index, Vector2Int gridCount)
+        {
+            return Sprite.Create(sprite.texture, GetSubSpriteRect(sprite, index, gridCount), new Vector2(0.5f, 0.5f),
+                sprite.pixelsPerUnit);
         }
 
         private static Sprite GenFullTileSprite(Sprite sprite, Vector2Int tileSize)
@@ -132,7 +139,7 @@ namespace RPGTool.Editor
                     tileData[0][0] += 4;
                     tileData[0][1] -= 4;
                 }
-                else if (tileData[1][0] == 7 || tileData[1][1] == 11)
+                if (tileData[1][0] == 7 || tileData[1][1] == 11)
                 {
                     tileData[1][0] += 4;
                     tileData[1][1] -= 4;
@@ -143,7 +150,7 @@ namespace RPGTool.Editor
                     tileData[0][0] += 1;
                     tileData[1][0] -= 1;
                 }
-                else if (tileData[0][1] == 13 || tileData[1][1] == 14)
+                if (tileData[0][1] == 13 || tileData[1][1] == 14)
                 {
                     tileData[0][1] += 1;
                     tileData[1][1] -= 1;
@@ -175,7 +182,7 @@ namespace RPGTool.Editor
                                 tileData[x][y] = 6;
                             else if (x == 1 && y == 0 && tileData[1][1] == 23)
                                 tileData[x][y] = 9;
-                            else if (x == 0 && y == 0 && tileData[1][1] == 13)
+                            else if (x == 0 && y == 0 && tileData[1][1] == 23)
                                 tileData[x][y] = 10;
 
                             else if (x == 0 && y == 0 && tileData[1][0] == 19)
@@ -193,6 +200,16 @@ namespace RPGTool.Editor
                                 tileData[x][y] = 5;
                         }
 
+                        if (tileData[0][0] > 4 && tileData[0][0] < 11 && 
+                            tileData[0][1] > 4 && tileData[0][1] < 11 &&
+                            tileData[1][0] > 4 && tileData[1][0] < 11 &&
+                            tileData[1][1] > 4 && tileData[1][1] < 11)
+                        {
+                            tileData[0][0] = 10;
+                            tileData[1][0] = 9;
+                            tileData[0][1] = 6;
+                            tileData[1][1] = 5;
+                        }
                         DrawSpriteOnTexture(autoTileTexture, GetSubSprite(sprite, tileData[x][y], AutoTile.AutoTileGrid * 2),
                             tilePos + new Vector2Int((int)(tileSize.x * x * 0.5f), (int)(tileSize.y * y * 0.5f)));
                     }
@@ -215,8 +232,9 @@ namespace RPGTool.Editor
         void OnGUI()
         {
             _autoTileType = EditorGUILayout.Popup("Auto tile type", _autoTileType, new[] {"11123334", "12345678"});
-            _selectedSprite =
-                (Sprite) EditorGUILayout.ObjectField("Auto tile", _selectedSprite, typeof(Sprite), false);
+            _selectedTexture =
+                (Texture2D) EditorGUILayout.ObjectField("Auto tile", _selectedTexture, typeof(Texture2D), false);
+            _pixelsPerUnit = EditorGUILayout.IntField("Pixels Per Unit", _pixelsPerUnit);
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Tile name",GUILayout.MaxWidth(60));
@@ -239,6 +257,16 @@ namespace RPGTool.Editor
                     tileNames = tileNames.Replace('\r', '\n');
 
                 var nameList = tileNames.Split('\n');
+                var dir = AssetDatabase.GUIDToAssetPath(AssetDatabase.CreateFolder(
+                    Path.GetDirectoryName(AssetDatabase.GetAssetPath(_selectedTexture)), _selectedTexture.name));
+
+                var textureImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(_selectedTexture)) as TextureImporter;
+
+                if (textureImporter == null)
+                    throw new NullReferenceException();
+                textureImporter.isReadable = true;
+                textureImporter.SaveAndReimport();
+
                 if (_autoTileType == 0)
                 {
                     if (nameList.Length < 16)
@@ -252,29 +280,28 @@ namespace RPGTool.Editor
                     for (var y = 0; y < 4; ++y)
                     {
                         var posX = x == 0 ? 0 :
-                            x == 1 ? _selectedSprite.rect.width * 3 / 8 :
-                            x == 2 ? _selectedSprite.rect.width * 1 / 2 :
-                            _selectedSprite.rect.width * 7 / 8;
+                            x == 1 ? _selectedTexture.width * 3 / 8 :
+                            x == 2 ? _selectedTexture.width * 1 / 2 :
+                            _selectedTexture.width * 7 / 8;
 
-                        var posY = _selectedSprite.rect.height * (3 - y) / 4;
+                        var posY = _selectedTexture.height * (3 - y) / 4;
 
                         var animaFrameCount = x % 2 == 0 ? 3 : 1;
 
                         var sprites = new Sprite[animaFrameCount];
                         for (var i = 0; i < animaFrameCount; ++i)
                         {
-                            var rect = new Rect(posX + i * _selectedSprite.rect.width * 1.0f / 8, posY,
-                                _selectedSprite.rect.width * 1.0f / 8,
-                                _selectedSprite.rect.height / 4.0f);
+                            var rect = new Rect(posX + i * _selectedTexture.width * 1.0f / 8, posY,
+                                _selectedTexture.width * 1.0f / 8,
+                                _selectedTexture.height / 4.0f);
 
-                            sprites[i] = Sprite.Create(_selectedSprite.texture, rect, new Vector2(0.5f, 0.5f),
-                                _selectedSprite.pixelsPerUnit);
+                            sprites[i] = Sprite.Create(_selectedTexture, rect, new Vector2(0.5f, 0.5f),
+                                _pixelsPerUnit);
                         }
 
                         var tileName = "";
                         tileName = y <= 1 ? nameList[x * 2 + y] : nameList[x * 2 + (y - 2) + 8];
-                        CreateTile(sprites, Path.GetDirectoryName(AssetDatabase.GetAssetPath(_selectedSprite)),
-                            tileName);
+                        CreateTile(sprites, dir, tileName);
                     }
                 }
                 else if (_autoTileType == 1)
@@ -289,15 +316,13 @@ namespace RPGTool.Editor
                     for (var y = 0; y < 4; ++y)
                     {
                         var sprites = new Sprite[1];
-                        var rect = new Rect(x / 8.0f * _selectedSprite.rect.width, (3 - y) / 4.0f * _selectedSprite.rect.height,
-                            _selectedSprite.rect.width * 1.0f / 8,
-                            _selectedSprite.rect.height / 4.0f);
+                        var rect = new Rect(x / 8.0f * _selectedTexture.width, (3 - y) / 4.0f * _selectedTexture.height,
+                            _selectedTexture.width * 1.0f / 8,
+                            _selectedTexture.height / 4.0f);
 
-                        sprites[0] = Sprite.Create(_selectedSprite.texture, rect, new Vector2(0.5f, 0.5f),
-                            _selectedSprite.pixelsPerUnit);
-                        CreateTile(sprites, AssetDatabase.GUIDToAssetPath(AssetDatabase.CreateFolder(
-                                Path.GetDirectoryName(AssetDatabase.GetAssetPath(_selectedSprite)), _selectedSprite.name)),
-                            nameList[x + y * 8]);
+                        sprites[0] = Sprite.Create(_selectedTexture, rect, new Vector2(0.5f, 0.5f),
+                            _pixelsPerUnit);
+                        CreateTile(sprites, dir, nameList[x + y * 8]);
                     }
                 }
             }
@@ -316,22 +341,50 @@ namespace RPGTool.Editor
 
             for (var i = 0; i < autoTileSprites.Length; ++i)
             {
-                var animationiDir = AssetDatabase.GUIDToAssetPath(AssetDatabase.CreateFolder(outputDir, "" + i));
+                //保存
                 var fullTileSprite = GenFullTileSprite(autoTileSprites[i], tileSize);
-                AssetDatabase.CreateAsset(fullTileSprite.texture,
-                    animationiDir + "\\FullSprite.asset");
+                var fullTileSpriteName = "FullSprite" + "_" + i + ".png";
+                var pngFile =
+                    File.OpenWrite(Application.dataPath + "\\..\\" + outputDir + "\\" + fullTileSpriteName);
+                var pngData = fullTileSprite.texture.EncodeToPNG();
+                pngFile.Write(pngData, 0, pngData.Length);
+                pngFile.Close();
+
+                AssetDatabase.ImportAsset(outputDir + "/" + fullTileSpriteName);
+                var fullSpriteInporter = AssetImporter.GetAtPath(outputDir + "/" + fullTileSpriteName) as TextureImporter;
+
+                if (fullSpriteInporter == null)
+                    throw new NullReferenceException();
+
+                fullSpriteInporter.spriteImportMode = SpriteImportMode.Multiple;
+                fullSpriteInporter.spritePixelsPerUnit = fullTileSprite.pixelsPerUnit;
+
+                var spriteMetaList = new SpriteMetaData[(int)AutoTile.TileConnection.Count];
 
                 //分割素材
+                for (var j = 0; j < (int) AutoTile.TileConnection.Count; ++j)
+                {
+                    var spriteMetaData = new SpriteMetaData()
+                    {
+                        pivot = new Vector2(0.5f, 0.5f),
+                        rect = GetSubSpriteRect(fullTileSprite, j, AutoTile.FullTileGrid)
+                    };
+                    spriteMetaList[j] = spriteMetaData;
+                }
+
+                fullSpriteInporter.spritesheet = spriteMetaList;
+                fullSpriteInporter.SaveAndReimport();
+
+                var sprites = AssetDatabase.LoadAllAssetsAtPath(outputDir + "/" + fullTileSpriteName);
+
+                //赋值
                 for (var j = 0; j < (int)AutoTile.TileConnection.Count; ++j)
                 {
                     if (tile.tileSprites[j] == null)
                         tile.tileSprites[j] =
                             new AutoTile.AutoTileAnimationInfo { animationSprite = new Sprite[autoTileSprites.Length] };
 
-                    var sprite = GetSubSprite(fullTileSprite, j, AutoTile.FullTileGrid);
-                    tile.tileSprites[j].animationSprite[i] = sprite;
-
-                    AssetDatabase.CreateAsset(sprite, animationiDir + "\\FullSprite_" + j + ".asset");
+                    tile.tileSprites[j].animationSprite[i] = sprites[j + 1] as Sprite;
                 }
             }
             AssetDatabase.CreateAsset(tile, outputDir + "_Tile.asset");

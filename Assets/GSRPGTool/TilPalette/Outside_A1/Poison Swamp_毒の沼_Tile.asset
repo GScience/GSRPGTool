@@ -1,0 +1,110 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a296698f8fbd6034abe351cc65c3817a, type: 3}
+  m_Name: "Poison Swamp_\u6BD2\u306E\u6CBC_Tile"
+  m_EditorClassIdentifier: 
+  tileSprites:
+  - animationSprite:
+    - {fileID: 21300000, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300002, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300004, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300006, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300008, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300010, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300012, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300014, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300016, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300018, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300020, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300022, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300024, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300026, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300028, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300030, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300032, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300034, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300036, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300038, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300040, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300042, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300044, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300046, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300048, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300050, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300052, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300054, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300056, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300058, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300060, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300062, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300064, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300066, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300068, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300070, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300072, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300074, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300076, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300078, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300080, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300082, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300084, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300086, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300088, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300090, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  - animationSprite:
+    - {fileID: 21300092, guid: b61429617accf124c918a0c64f3611a1, type: 3}
+  animationSpeed: 1
