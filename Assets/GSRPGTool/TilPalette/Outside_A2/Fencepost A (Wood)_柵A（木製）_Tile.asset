@@ -12,6 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a296698f8fbd6034abe351cc65c3817a, type: 3}
   m_Name: "Fencepost A (Wood)_\u67F5A\uFF08\u6728\u88FD\uFF09_Tile"
   m_EditorClassIdentifier: 
+  animationSpeed: 1
+  autoTileTexture: {fileID: 2800000, guid: c9c370715eda7654eb68e0f2a3b666ee, type: 3}
+  autoTileSpriteRect:
+    serializedVersion: 2
+    x: 576
+    y: 432
+    width: 96
+    height: 144
   tileSprites:
   - animationSprite:
     - {fileID: 21300000, guid: 58ef91278154c5e4c8deaf6404c6f982, type: 3}
@@ -107,4 +115,4 @@ MonoBehaviour:
     - {fileID: 21300090, guid: 58ef91278154c5e4c8deaf6404c6f982, type: 3}
   - animationSprite:
     - {fileID: 21300092, guid: 58ef91278154c5e4c8deaf6404c6f982, type: 3}
-  animationSpeed: 1
+  tileType: 1

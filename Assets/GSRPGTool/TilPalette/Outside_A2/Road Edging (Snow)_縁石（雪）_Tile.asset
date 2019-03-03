@@ -12,6 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a296698f8fbd6034abe351cc65c3817a, type: 3}
   m_Name: "Road Edging (Snow)_\u7E01\u77F3\uFF08\u96EA\uFF09_Tile"
   m_EditorClassIdentifier: 
+  animationSpeed: 1
+  autoTileTexture: {fileID: 2800000, guid: c9c370715eda7654eb68e0f2a3b666ee, type: 3}
+  autoTileSpriteRect:
+    serializedVersion: 2
+    x: 480
+    y: 288
+    width: 96
+    height: 144
   tileSprites:
   - animationSprite:
     - {fileID: 21300000, guid: 7e7c433e6135caa429ad1c50215d1e41, type: 3}
@@ -107,4 +115,4 @@ MonoBehaviour:
     - {fileID: 21300090, guid: 7e7c433e6135caa429ad1c50215d1e41, type: 3}
   - animationSprite:
     - {fileID: 21300092, guid: 7e7c433e6135caa429ad1c50215d1e41, type: 3}
-  animationSpeed: 1
+  tileType: 1

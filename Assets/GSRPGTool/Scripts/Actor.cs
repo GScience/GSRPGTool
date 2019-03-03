@@ -153,6 +153,9 @@ namespace RPGTool
         /// <returns></returns>
         public virtual bool CanMoveIn(InfoTile infoTile)
         {
+            if (infoTile == null)
+                return false;
+
             if (infoTile.hasActor)
                 return false;
 

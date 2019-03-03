@@ -12,99 +12,107 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a296698f8fbd6034abe351cc65c3817a, type: 3}
   m_Name: "Lotus Pads_\u84EE\u306E\u8449_Tile"
   m_EditorClassIdentifier: 
+  animationSpeed: 1
+  autoTileTexture: {fileID: 2800000, guid: 9c74081acff6cfc44a8975bd44439b79, type: 3}
+  autoTileSpriteRect:
+    serializedVersion: 2
+    x: 288
+    y: 432
+    width: 96
+    height: 144
   tileSprites:
   - animationSprite:
-    - {fileID: 21300000, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300000, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300002, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300002, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300004, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300004, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300006, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300006, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300008, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300008, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300010, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300010, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300012, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300012, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300014, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300014, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300016, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300016, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300018, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300018, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300020, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300020, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300022, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300022, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300024, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300024, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300026, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300026, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300028, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300028, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300030, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300030, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300032, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300032, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300034, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300034, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300036, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300036, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300038, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300038, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300040, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300040, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300042, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300042, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300044, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300044, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300046, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300046, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300048, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300048, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300050, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300050, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300052, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300052, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300054, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300054, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300056, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300056, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300058, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300058, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300060, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300060, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300062, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300062, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300064, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300064, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300066, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300066, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300068, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300068, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300070, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300070, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300072, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300072, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300074, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300074, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300076, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300076, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300078, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300078, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300080, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300080, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300082, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300082, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300084, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300084, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300086, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300086, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300088, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300088, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300090, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
+    - {fileID: 21300090, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
   - animationSprite:
-    - {fileID: 21300092, guid: 57510e3c93768e846a33e61c0950148e, type: 3}
-  animationSpeed: 1
+    - {fileID: 21300092, guid: cf3a95289c82b164782ec368d06f1d95, type: 3}
+  tileType: 1

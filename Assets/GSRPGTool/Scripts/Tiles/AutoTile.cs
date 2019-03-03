@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -68,6 +69,10 @@ namespace RPGTool.Tiles
 #endif
         public float animationSpeed = 1.0f;
 
+        [HideInInspector] public Rect autoTileSpriteRect;
+
+        [HideInInspector] public Texture2D autoTileTexture;
+
         //纹理
         [SerializeField] public AutoTileAnimationInfo[] tileSprites;
 
@@ -120,7 +125,9 @@ namespace RPGTool.Tiles
         public override bool StartUp(Vector3Int position, ITilemap tilemap, GameObject go)
         {
 #if UNITY_EDITOR
-            if (!Application.isPlaying)
+            var gameObject = tilemap.GetComponent<Tilemap>().gameObject;
+
+            if (!Application.isPlaying || EditorSceneManager.IsPreviewSceneObject(gameObject))
                 return true;
 #endif
             //刷新地图的可行走度

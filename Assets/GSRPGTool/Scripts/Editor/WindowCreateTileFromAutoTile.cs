@@ -376,16 +376,13 @@ namespace RPGTool.Editor
             {
                 //保存
                 var fullTileSprite = GenFullTileSprite(autoTileSprites[i], tileSize);
-                var fullTileSpriteName = "FullSprite" + "_" + i + ".png";
-                var pngFile =
-                    File.OpenWrite(Application.dataPath + "\\..\\" + outputDir + "\\" + fullTileSpriteName);
-                var pngData = fullTileSprite.texture.EncodeToPNG();
-                pngFile.Write(pngData, 0, pngData.Length);
-                pngFile.Close();
+                var fullTileSpriteName = outputDir + "/FullSprite" + "_" + i + ".png";
 
-                AssetDatabase.ImportAsset(outputDir + "/" + fullTileSpriteName);
+                SaveTextureToPng(fullTileSprite.texture, fullTileSpriteName);
+
+                AssetDatabase.ImportAsset(fullTileSpriteName);
                 var fullSpriteInporter =
-                    AssetImporter.GetAtPath(outputDir + "/" + fullTileSpriteName) as TextureImporter;
+                    AssetImporter.GetAtPath(fullTileSpriteName) as TextureImporter;
 
                 if (fullSpriteInporter == null)
                     throw new NullReferenceException();
@@ -409,7 +406,7 @@ namespace RPGTool.Editor
                 fullSpriteInporter.spritesheet = spriteMetaList;
                 fullSpriteInporter.SaveAndReimport();
 
-                var sprites = AssetDatabase.LoadAllAssetsAtPath(outputDir + "/" + fullTileSpriteName);
+                var sprites = AssetDatabase.LoadAllAssetsAtPath(fullTileSpriteName);
 
                 //赋值
                 for (var j = 0; j < (int) AutoTile.TileConnection.Count; ++j)
@@ -422,8 +419,29 @@ namespace RPGTool.Editor
                 }
             }
 
+            tile.autoTileTexture = autoTileSprites[0].texture;
+            tile.autoTileSpriteRect = autoTileSprites[0].rect;
             AssetDatabase.CreateAsset(tile, outputDir + "_Tile.asset");
+
             AssetDatabase.Refresh();
+        }
+
+        private static void SaveTextureToPng(Texture2D texture, string path)
+        {
+            var pngFile =
+                File.OpenWrite(Application.dataPath + "\\..\\" + path);
+            var pngData = texture.EncodeToPNG();
+            pngFile.Write(pngData, 0, pngData.Length);
+            pngFile.Close();
+        }
+
+        public static Texture2D GetIcon(Sprite autoTileSprite)
+        {
+            var iconSprite = GetSubSprite(autoTileSprite, 4, AutoTile.AutoTileGrid);
+            var iconTexture = new Texture2D((int) iconSprite.rect.height, (int) iconSprite.rect.width);
+            DrawSpriteOnTexture(iconTexture, iconSprite, Vector2Int.zero);
+
+            return iconTexture;
         }
     }
 }
