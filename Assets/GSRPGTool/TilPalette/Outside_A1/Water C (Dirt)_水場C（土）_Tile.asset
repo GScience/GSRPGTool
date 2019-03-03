@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a296698f8fbd6034abe351cc65c3817a, type: 3}
   m_Name: "Water C (Dirt)_\u6C34\u5834C\uFF08\u571F\uFF09_Tile"
   m_EditorClassIdentifier: 
+  animationSpeed: 1
+  tileType: 3
   tileSprites:
   - animationSprite:
     - {fileID: 21300000, guid: 79d30026e54c2f0428774f0eb9e438b5, type: 3}
@@ -201,4 +203,3 @@ MonoBehaviour:
     - {fileID: 21300092, guid: 79d30026e54c2f0428774f0eb9e438b5, type: 3}
     - {fileID: 21300092, guid: 08169ba185d85374294ce852a6a3bba6, type: 3}
     - {fileID: 21300092, guid: 0575046c24584c3478846b2ba2dad2f8, type: 3}
-  animationSpeed: 1

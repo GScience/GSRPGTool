@@ -52,19 +52,27 @@ namespace RPGTool.Physical
                 switch (_movement)
                 {
                     case Actor.Face.Up:
-                        if (SceneInfo.sceneInfo.movementInfoTilemap.CanMove(GridTransform.position + Vector2Int.up))
+                        if (Actor == null ||
+                            Actor.CanMoveIn(
+                                SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + Vector2Int.up)))
                             GridTransform.Move(Vector2Int.up, 1 / speed);
                         break;
                     case Actor.Face.Down:
-                        if (SceneInfo.sceneInfo.movementInfoTilemap.CanMove(GridTransform.position + Vector2Int.down))
+                        if (Actor == null ||
+                            Actor.CanMoveIn(
+                                SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + Vector2Int.down)))
                             GridTransform.Move(Vector2Int.down, 1 / speed);
                         break;
                     case Actor.Face.Left:
-                        if (SceneInfo.sceneInfo.movementInfoTilemap.CanMove(GridTransform.position + Vector2Int.left))
+                        if (Actor == null ||
+                            Actor.CanMoveIn(
+                                SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + Vector2Int.left)))
                             GridTransform.Move(Vector2Int.left, 1 / speed);
                         break;
                     case Actor.Face.Right:
-                        if (SceneInfo.sceneInfo.movementInfoTilemap.CanMove(GridTransform.position + Vector2Int.right))
+                        if (Actor == null ||
+                            Actor.CanMoveIn(
+                                SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + Vector2Int.right)))
                             GridTransform.Move(Vector2Int.right, 1 / speed);
                         break;
                     default:

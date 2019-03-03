@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a296698f8fbd6034abe351cc65c3817a, type: 3}
   m_Name: "Waterfall B (Dirt Wall)_\u6EDDB\uFF08\u571F\u58C1\uFF09_Tile"
   m_EditorClassIdentifier: 
+  animationSpeed: 1
+  tileType: 3
   tileSprites:
   - animationSprite:
     - {fileID: 21300000, guid: 89bb0cd366c9aef41a8c18c5b89cc028, type: 3}
@@ -107,4 +109,3 @@ MonoBehaviour:
     - {fileID: 21300090, guid: 89bb0cd366c9aef41a8c18c5b89cc028, type: 3}
   - animationSprite:
     - {fileID: 21300092, guid: 89bb0cd366c9aef41a8c18c5b89cc028, type: 3}
-  animationSpeed: 1

@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a296698f8fbd6034abe351cc65c3817a, type: 3}
   m_Name: "Waterfall E (Stone Wall)_\u6EDDE\uFF08\u77F3\u58C1\uFF09_Tile"
   m_EditorClassIdentifier: 
+  animationSpeed: 1
+  tileType: 3
   tileSprites:
   - animationSprite:
     - {fileID: 21300000, guid: 1a9a137f25fa0fd4a98818f9bbe5e5ea, type: 3}
@@ -201,4 +203,3 @@ MonoBehaviour:
     - {fileID: 21300092, guid: 1a9a137f25fa0fd4a98818f9bbe5e5ea, type: 3}
     - {fileID: 21300092, guid: f6bbc3281639d684c8c35272a2b3d29d, type: 3}
     - {fileID: 21300092, guid: 1f91e8f962d382246828e82004568bb7, type: 3}
-  animationSpeed: 1

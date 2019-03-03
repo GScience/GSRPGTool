@@ -1,4 +1,5 @@
 ﻿using RPGTool.Physical;
+using RPGTool.Tiles;
 using UnityEngine;
 
 namespace RPGTool
@@ -143,6 +144,19 @@ namespace RPGTool
 
                 SpriteRenderer.sprite = _actorSprites[imageIndex + (int) faceTo * 3];
             }
+        }
+
+        /// <summary>
+        ///     是否可以走在指定类型的Tile当中
+        /// </summary>
+        /// <param name="infoTile">Tile信息</param>
+        /// <returns></returns>
+        public virtual bool CanMoveIn(InfoTile infoTile)
+        {
+            if (infoTile.hasActor)
+                return false;
+
+            return infoTile.tileType == InfoTile.TileType.Ground;
         }
     }
 }

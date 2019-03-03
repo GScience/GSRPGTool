@@ -1,17 +1,16 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using RPGTool.Actions;
 using UnityEditor;
 using UnityEditorInternal;
-using RPGTool.Actions;
+using UnityEngine;
 
 namespace RPGTool.Editor
 {
     [CustomEditor(typeof(QueueActionList))]
     public class QueueActionListDrawer : UnityEditor.Editor
     {
-        ReorderableList reorderableList;
+        private ReorderableList reorderableList;
 
-        void OnEnable()
+        private void OnEnable()
         {
             var prop = serializedObject.FindProperty("queueActionList");
 
@@ -29,7 +28,7 @@ namespace RPGTool.Editor
                 {
                     GUI.backgroundColor = Color.yellow;
                 },
-                drawHeaderCallback = (rect) =>
+                drawHeaderCallback = rect =>
                     EditorGUI.LabelField(rect, prop.displayName)
             };
 
@@ -40,7 +39,6 @@ namespace RPGTool.Editor
             //背景色
 
             //头部
-
         }
 
         public override void OnInspectorGUI()

@@ -43,12 +43,12 @@ namespace RPGTool.Physical
             //新的站位
             foreach (var pos in newJointPosition)
                 if (!JointPositions.Contains(pos))
-                    SceneInfo.sceneInfo.movementInfoTilemap.SetMovable(pos, false);
+                    SceneInfo.sceneInfo.infoTilemap.SetTileInfo(pos, true);
 
             //旧的站位
             foreach (var pos in JointPositions)
                 if (!newJointPosition.Contains(pos))
-                    SceneInfo.sceneInfo.movementInfoTilemap.SetMovable(pos, true);
+                    SceneInfo.sceneInfo.infoTilemap.SetTileInfo(pos, false);
 
             JointPositions = newJointPosition;
         }

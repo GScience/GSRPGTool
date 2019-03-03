@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a296698f8fbd6034abe351cc65c3817a, type: 3}
   m_Name: "Water A (Meadow)_\u6C34\u5834A\uFF08\u8349\u5730\uFF09_Tile"
   m_EditorClassIdentifier: 
+  animationSpeed: 1
+  tileType: 3
   tileSprites:
   - animationSprite:
     - {fileID: 21300000, guid: 8d1d1c27127d5784abba2fe6a1cdefd8, type: 3}
@@ -201,4 +203,3 @@ MonoBehaviour:
     - {fileID: 21300092, guid: 8d1d1c27127d5784abba2fe6a1cdefd8, type: 3}
     - {fileID: 21300092, guid: c975db0b1bfdea74590b977062e7b76f, type: 3}
     - {fileID: 21300092, guid: 4fafa57f87122a448bf1f8f46d83eaf4, type: 3}
-  animationSpeed: 1
