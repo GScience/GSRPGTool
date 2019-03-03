@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections;
+using System.IO;
+using RPGTool.Save;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace RPGTool
 {
@@ -162,6 +166,18 @@ namespace RPGTool
             }
 
             MovingCoroutine = null;
+        }
+
+        public void ResetMovement()
+        {
+            if (MovingCoroutine != null)
+            {
+                StopCoroutine(MovingCoroutine);
+                MovingCoroutine = null;
+            }
+
+            _movementOffset = Vector2.zero;
+            IsMoving = false;
         }
     }
 }

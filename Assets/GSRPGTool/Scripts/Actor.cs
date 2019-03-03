@@ -1,4 +1,6 @@
-﻿using RPGTool.Physical;
+﻿using System.IO;
+using RPGTool.Physical;
+using RPGTool.Save;
 using RPGTool.Tiles;
 using UnityEngine;
 
@@ -6,7 +8,7 @@ namespace RPGTool
 {
     [ExecuteInEditMode]
     [RequireComponent(typeof(SpriteRenderer))]
-    public class Actor : MonoBehaviour
+    public class Actor : MonoBehaviour, ISavable
     {
         /// <summary>
         ///     角色面向
@@ -160,6 +162,20 @@ namespace RPGTool
                 return false;
 
             return infoTile.tileType == InfoTile.TileType.Ground;
+        }
+
+
+        public void OnSave(BinaryWriter stream)
+        {
+            DataSaver.Save(GridTransform.position, stream);
+            DataSaver.Save(faceTo, stream);
+        }
+
+        public void OnLoad(BinaryReader stream)
+        {
+            GridTransform.ResetMovement();
+            GridTransform.position = DataLoader.Load<Vector2Int>(stream);
+            faceTo = DataLoader.Load<Face>(stream);
         }
     }
 }
