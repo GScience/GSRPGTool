@@ -31,7 +31,11 @@ namespace RPGTool
 
         public InfoTile GetTileInfo(Vector2Int position)
         {
-            return Tilemap.GetTile<InfoTile>(new Vector3Int(position.x, position.y, 0));
+            var tile = Tilemap.GetTile<InfoTile>(new Vector3Int(position.x, position.y, 0));
+
+            if (tile == null)
+                tile = InfoTile.GetInfoTile(InfoTile.TileType.Void, false);
+            return tile;
         }
     }
 }

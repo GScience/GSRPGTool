@@ -132,7 +132,13 @@ namespace RPGTool.Tiles
 #endif
             //刷新地图的可行走度
             if (SceneInfo.sceneInfo != null)
-                SceneInfo.sceneInfo.infoTilemap.SetTileInfo(new Vector2Int(position.x, position.y), tileType, false);
+            {
+                var currentTileInfo =
+                    SceneInfo.sceneInfo.infoTilemap.GetTileInfo(new Vector2Int(position.x, position.y));
+
+                if (currentTileInfo.tileType == InfoTile.TileType.Ground || currentTileInfo.tileType == InfoTile.TileType.Void)
+                    SceneInfo.sceneInfo.infoTilemap.SetTileInfo(new Vector2Int(position.x, position.y), tileType, false);
+            }
 
             return true;
         }
