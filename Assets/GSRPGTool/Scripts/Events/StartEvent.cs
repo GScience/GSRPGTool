@@ -9,24 +9,24 @@ using UnityEditor;
 
 namespace RPGTool.Events
 {
-    public class MoveActor : IEventDisposer
+    /// <summary>
+    /// 开始事件
+    /// </summary>
+    [Serializable]
+    public class StartEvent : IEventDisposer
     {
-        public Actor actor;
-
         public void OnStart()
         {
         }
 
         public bool Update()
         {
-            return false;
+            return true;
         }
-
 #if UNITY_EDITOR
         public void OnGUI()
         {
-            EditorGUILayout.LabelField("移动角色：");
-            actor = (Actor) EditorGUILayout.ObjectField("移动的角色", actor, typeof(Actor), true);
+            EditorGUILayout.LabelField("开始");
         }
 #endif
     }
