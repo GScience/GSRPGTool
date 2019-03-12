@@ -11,18 +11,25 @@ using UnityEngine.SceneManagement;
 
 namespace RPGTool.Editor
 {
-    public class WindowEventEditor : EditorWindow
+    public class WindowEventTriggerEditor : EditorWindow
     {
-        public GameEventGroup eventGroup;
+        public EventBlock eventBlock;
+
+        private Vector2 scrollPos = Vector2.zero;
 
         void OnGUI()
         {
+            if (eventBlock == null)
+                return;
+
+            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+
             EditorGUILayout.BeginVertical("box");
 
-            if (eventGroup.eventList == null || eventGroup.eventList.Count == 0)
-                eventGroup.AddEvent<StartEvent>();
+            if (eventBlock.eventList == null || eventBlock.eventList.Count == 0)
+                eventBlock.AddEvent<StartEvent>();
 
-            var gameEvent = eventGroup.GetEventByIndex(0);
+            var gameEvent = eventBlock.GetEventByIndex(0);
 
             while (gameEvent != null)
             {
@@ -36,10 +43,9 @@ namespace RPGTool.Editor
             EditorGUILayout.EndVertical();
 
             if (GUI.changed)
-            {
                 EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
-                EditorUtility.SetDirty(eventGroup);
-            }
+
+            EditorGUILayout.EndScrollView();
         }
     }
 }

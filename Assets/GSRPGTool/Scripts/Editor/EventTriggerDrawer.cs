@@ -5,17 +5,17 @@ using UnityEngine;
 
 namespace RPGTool.Editor
 {
-    [CustomEditor(typeof(GameEventGroup))]
-    public class QueueActionListDrawer : UnityEditor.Editor
+    [CustomEditor(typeof(EventTrigger))]
+    public class EventTriggerDrawer : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {
-            var eventGroup = target as GameEventGroup;
+            var gameEventTrigger = target as EventTrigger;
 
             if (GUILayout.Button("Open Event Editor"))
             {
-                var window = EditorWindow.GetWindow<WindowEventEditor>();
-                window.eventGroup = eventGroup; 
+                var window = EditorWindow.GetWindow<WindowEventTriggerEditor>();
+                window.eventBlock = gameEventTrigger.gameEventBlock;
                 window.Show();
             }
         }

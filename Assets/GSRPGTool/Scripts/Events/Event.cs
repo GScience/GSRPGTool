@@ -11,7 +11,7 @@ using UnityEditor;
 namespace RPGTool.Events
 {
     [Serializable]
-    public class GameEvent
+    public class Event
     {
         /// <summary>
         /// 是否阻塞事件系统
@@ -46,14 +46,14 @@ namespace RPGTool.Events
 
         public string eventValue;
 
-        void OnStart()
+        public void OnStart()
         {
-            EventDisposer.OnStart();
+            EventDisposer.OnStart(this);
         }
 
-        void Update()
+        public bool Update()
         {
-            EventDisposer.Update();
+            return EventDisposer.Update(this);
         }
 
 #if UNITY_EDITOR
@@ -63,7 +63,7 @@ namespace RPGTool.Events
         public void OnGUI()
         {
             EditorGUILayout.BeginVertical();
-            EventDisposer.OnGUI();
+            EventDisposer.OnGUI(this);
             EditorGUILayout.EndVertical();
 
             EditorGUILayout.BeginHorizontal("box");
@@ -71,46 +71,69 @@ namespace RPGTool.Events
 
             if (GUILayout.Button("+", GUILayout.MaxWidth(25)))
             {
-                var newEvent = eventGroup.AddEvent<MoveActor>(); 
+                var newEvent = eventBlock.AddEvent<MoveActor>(); 
 
                 if (Next != null)
                     newEvent.Next = Next;
                 Next = newEvent;
             }
 
-            GUILayout.Button("-", GUILayout.MaxWidth(25));
+            //禁止删除第一个事件
+            if (Previous != null)
+            {
+                if (GUILayout.Button("-", GUILayout.MaxWidth(25)))
+                {
+                    eventBlock.RemoveEvent(this);
+                    if (Next != null)
+                        Next.Previous = Previous;
+                }
+            }
             EditorGUILayout.EndHorizontal();
 
             //序列化
             eventValue = JsonUtility.ToJson(EventDisposer);
         }
 #endif
-        public static GameEvent Create<T>(GameEventGroup eventGroup) where T : IEventDisposer
+        public static Event Create<T>(EventBlock eventBlock) where T : IEventDisposer
         {
-            var newEvent = new GameEvent { eventId = DateTime.Now.Ticks, eventGroup = eventGroup, disposerType = typeof(T).FullName };
+            var newEvent = new Event { eventId = DateTime.Now.Ticks, eventBlock = eventBlock, disposerType = typeof(T).FullName };
             return newEvent;
         }
 
         /// <summary>
         /// 下一个事件
         /// </summary>
-        [SerializeField] public long nextEventId;
+        [SerializeField] private long nextEventId;
+        [SerializeField] private long previousEventId;
 
-        public GameEvent Next
+        public Event Next
         {
-            get => nextEventId != 0 ? eventGroup.GetEventById(nextEventId) : null;
+            get => nextEventId != 0 ? eventBlock.GetEventById(nextEventId) : null;
             set
             {
                 if (nextEventId == eventId)
                     throw new ArgumentException("Next event can't set to self");
                 nextEventId = value.eventId;
+                value.previousEventId = eventId;
+            }
+        }
+
+        public Event Previous
+        {
+            get => previousEventId != 0 ? eventBlock.GetEventById(previousEventId) : null;
+            set
+            {
+                if (previousEventId == eventId)
+                    throw new ArgumentException("Next event can't set to self");
+                previousEventId = value.eventId;
+                value.nextEventId = eventId;
             }
         }
 
         /// <summary>
         /// 事件所属的事件组
         /// </summary>
-        [SerializeField]
-        public GameEventGroup eventGroup;
+        [NonSerialized]
+        public EventBlock eventBlock;
     }
 }

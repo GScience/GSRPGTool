@@ -11,19 +11,19 @@ namespace RPGTool.Events
         /// <summary>
         /// 在事件开始的时候调用
         /// </summary>
-        void OnStart();
+        void OnStart(Event gameEvent);
 
         /// <summary>
         /// 刷新的时候调用
         /// </summary>
-        /// <returns>事件是否结束</returns>
-        bool Update();
+        /// <returns>事件是否需要继续刷新</returns>
+        bool Update(Event gameEvent);
 
 #if UNITY_EDITOR
         /// <summary>
         /// 编辑器GUI
         /// </summary>
-        void OnGUI();
+        void OnGUI(Event gameEvent);
 #endif
     }
 }

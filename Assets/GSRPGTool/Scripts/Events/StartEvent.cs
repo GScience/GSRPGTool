@@ -15,16 +15,16 @@ namespace RPGTool.Events
     [Serializable]
     public class StartEvent : IEventDisposer
     {
-        public void OnStart()
+        public void OnStart(Event gameEvent)
         {
         }
 
-        public bool Update()
+        public bool Update(Event gameEvent)
         {
             return true;
         }
 #if UNITY_EDITOR
-        public void OnGUI()
+        public void OnGUI(Event gameEvent)
         {
             EditorGUILayout.LabelField("开始");
         }
