@@ -11,22 +11,34 @@ namespace RPGTool.Save
 {
     public class SaveManager : MonoBehaviour
     {
+        public static string SaveName { get; private set; }
+
+        public static string SavePath => Application.persistentDataPath + "/" + SaveName + "/scene" +
+                                         SceneManager.GetActiveScene().GetHashCode() + ".sav";
         private void Awake()
         {
-            Load();
+            Debug.Log("Save file locate in " + SavePath);
+            if (SaveName == "")
+                SaveName = "Save0";
+
+            LoadCurrentScene();
+
+            //创建目录
+            if (!Directory.Exists(Application.persistentDataPath + "/" + SaveName))
+                Directory.CreateDirectory(Application.persistentDataPath + "/" + SaveName);
+
+            DontDestroyOnLoad(this);
         }
 
-        private void Update()
+        public void Update()
         {
             if (Input.GetKeyDown(KeyCode.O))
-                Save();
-            else if (Input.GetKeyDown(KeyCode.L))
-                Load();
+                SaveCurrentScene();
         }
 
-        public void Save()
+        public void SaveCurrentScene()
         {
-            var saveFile = File.OpenWrite(Application.persistentDataPath + "/Save.sav");
+            var saveFile = File.OpenWrite(SavePath);
             var writer = new BinaryWriter(saveFile);
 
             foreach (var component in Resources.FindObjectsOfTypeAll<Component>())
@@ -48,12 +60,12 @@ namespace RPGTool.Save
             writer.Close();
         }
 
-        public void Load()
+        public void LoadCurrentScene()
         {
-            if (!File.Exists(Application.persistentDataPath + "/Save.sav"))
+            if (!File.Exists(SavePath))
                 return;
 
-            var saveFile = File.OpenRead(Application.persistentDataPath + "/Save.sav");
+            var saveFile = File.OpenRead(SavePath);
             var reader = new BinaryReader(saveFile);
             var objetIndex = new Dictionary<int, ISavable>();
 

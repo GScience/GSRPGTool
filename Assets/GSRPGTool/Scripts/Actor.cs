@@ -171,7 +171,7 @@ namespace RPGTool
             _currentMoveDirection = expectNextMoveDirection;
             var directionVector = FaceToVector(faceTo);
             if (CanMoveIn(
-                SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + directionVector)))
+                GameMapManager.gameMapManager.infoTilemap.GetTileInfo(GridTransform.position + directionVector)))
             {
                 GridTransform.Move(directionVector, 1 / speed);
                 expectNextMoveDirection = null;
@@ -291,7 +291,7 @@ namespace RPGTool
         public void AddJointPoint(Vector2Int point)
         {
             JointPositions.Add(point);
-            SceneInfo.sceneInfo.infoTilemap.SetTileInfo(point, true);
+            GameMapManager.gameMapManager.infoTilemap.SetTileInfo(point, true);
         }
 
         /// <summary>
@@ -303,12 +303,12 @@ namespace RPGTool
             //新的站位
             foreach (var pos in newJointPosition)
                 if (!JointPositions.Contains(pos))
-                    SceneInfo.sceneInfo.infoTilemap.SetTileInfo(pos, true);
+                    GameMapManager.gameMapManager.infoTilemap.SetTileInfo(pos, true);
 
             //旧的站位
             foreach (var pos in JointPositions)
                 if (!newJointPosition.Contains(pos))
-                    SceneInfo.sceneInfo.infoTilemap.SetTileInfo(pos, false);
+                    GameMapManager.gameMapManager.infoTilemap.SetTileInfo(pos, false);
 
             JointPositions = newJointPosition;
         }

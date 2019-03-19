@@ -2,12 +2,13 @@
 
 namespace RPGTool
 {
-    public class GameManager : MonoBehaviour
+    [ExecuteInEditMode]
+    public class GameMapManager : MonoBehaviour
     {
         /// <summary>
-        ///     全局GameManager
+        /// 全局变量
         /// </summary>
-        public static GameManager globalGameManager;
+        public static GameMapManager gameMapManager;
 
         /// <summary>
         ///     玩家
@@ -15,20 +16,24 @@ namespace RPGTool
         public Actor player;
 
         /// <summary>
+        /// 地图状态
+        /// </summary>
+        public InfoTilemap infoTilemap;
+
+        private void Awake()
+        {
+            gameMapManager = this;
+        }
+
+        /// <summary>
         ///     玩家坐标
         /// </summary>
         public Vector2Int playerPosition { get; private set; }
 
-        private void Awake()
-        {
-            if (globalGameManager != null)
-                Destroy(this);
-            globalGameManager = this;
-            DontDestroyOnLoad(gameObject);
-        }
-
         private void Update()
         {
+            gameMapManager = this;
+
             UpdatePlayerTransform();
         }
 
@@ -37,7 +42,11 @@ namespace RPGTool
         /// </summary>
         private void UpdatePlayerTransform()
         {
-            if (player == null)
+            if (player == null
+#if UNITY_EDITOR
+                || !Application.isPlaying
+#endif
+            )
                 return;
 
             playerPosition = player.GridTransform.position;
