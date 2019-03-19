@@ -15,7 +15,7 @@ namespace RPGTool.Physical
             GridTransform = GetComponent<GridTransform>();
         }
 
-        private void Update()
+        void Update()
         {
             if (GridTransform.IsMoving)
             {
@@ -38,6 +38,11 @@ namespace RPGTool.Physical
             }
         }
 
+        public void AddJointPoint(Vector2Int point)
+        {
+            JointPositions.Add(point);
+            SceneInfo.sceneInfo.infoTilemap.SetTileInfo(point, true);
+        }
         private void UpdateJointPos(List<Vector2Int> newJointPosition)
         {
             if (newJointPosition.Count == 0)

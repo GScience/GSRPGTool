@@ -58,25 +58,37 @@ namespace RPGTool.Physical
                         if (Actor == null || isKinematic ||
                             Actor.CanMoveIn(
                                 SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + Vector2Int.up)))
+                        {
                             GridTransform.Move(Vector2Int.up, 1 / speed);
+                            TileCollider.AddJointPoint(Vector2Int.up + Actor.GridTransform.position);
+                        }
                         break;
                     case Actor.Face.Down:
                         if (Actor == null || isKinematic ||
                             Actor.CanMoveIn(
                                 SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + Vector2Int.down)))
+                        {
                             GridTransform.Move(Vector2Int.down, 1 / speed);
+                            TileCollider.AddJointPoint(Vector2Int.down + Actor.GridTransform.position);
+                        }
                         break;
                     case Actor.Face.Left:
                         if (Actor == null || isKinematic ||
                             Actor.CanMoveIn(
                                 SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + Vector2Int.left)))
+                        {
                             GridTransform.Move(Vector2Int.left, 1 / speed);
+                            TileCollider.AddJointPoint(Vector2Int.left + Actor.GridTransform.position);
+                        }
                         break;
                     case Actor.Face.Right:
                         if (Actor == null || isKinematic ||
                             Actor.CanMoveIn(
                                 SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + Vector2Int.right)))
+                        {
                             GridTransform.Move(Vector2Int.right, 1 / speed);
+                            TileCollider.AddJointPoint(Vector2Int.right + Actor.GridTransform.position);
+                        }
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(direction), direction, null);

@@ -67,17 +67,52 @@ namespace RPGTool.GameScrpits
         /// <returns>当前事件Id</returns>
         public int MoveActor(Actor actor, Actor.Face moveTo, float speed)
         {
+            var rigidbody = actor.GetComponent<TileRigidbody>();
+            var startPos = actor.GridTransform.position;
             actionList.Add(new ScriptAction()
             {
                 OnStart = () =>
                 {
-                    var rigidbody = actor.GetComponent<TileRigidbody>();
+                    startPos = actor.GridTransform.position;
                     rigidbody.speed = speed;
                     rigidbody.SetMoveDirection(moveTo);
                 },
                 OnUpdate = () =>
                 {
-                    return !actor.GetComponent<GridTransform>().IsMoving;
+                    var offset = actor.GridTransform.position - startPos;
+                    switch (moveTo)
+                    {
+                        case Actor.Face.Up:
+                            if (offset == Vector2Int.up)
+                            {
+                                rigidbody.SetMoveDirection(null);
+                                return true;
+                            }
+                            break;
+                        case Actor.Face.Down:
+                            if (offset == Vector2Int.down)
+                            {
+                                rigidbody.SetMoveDirection(null);
+                                return true;
+                            }
+                            break;
+                        case Actor.Face.Left:
+                            if (offset == Vector2Int.left)
+                            {
+                                rigidbody.SetMoveDirection(null);
+                                return true;
+                            }
+                            break;
+                        case Actor.Face.Right:
+                            if (offset == Vector2Int.right)
+                            {
+                                rigidbody.SetMoveDirection(null);
+                                return true;
+                            }
+                            break;
+                    }
+                    rigidbody.SetMoveDirection(moveTo);
+                    return false;
                 }
             });
             return actionList.Count - 1;
