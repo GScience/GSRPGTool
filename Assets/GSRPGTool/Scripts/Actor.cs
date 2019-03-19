@@ -1,5 +1,6 @@
-﻿using System.IO;
-using RPGTool.Physical;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using RPGTool.Save;
 using RPGTool.Tiles;
 using UnityEngine;
@@ -7,7 +8,7 @@ using UnityEngine;
 namespace RPGTool
 {
     [ExecuteInEditMode]
-    [RequireComponent(typeof(SpriteRenderer), typeof(TileRigidbody))]
+    [RequireComponent(typeof(SpriteRenderer))]
     public class Actor : MonoBehaviour, ISavable
     {
         /// <summary>
@@ -26,6 +27,11 @@ namespace RPGTool
         /// </summary>
         private readonly Sprite[] _actorSprites = new Sprite[12];
 
+        /// <summary>
+        ///     当前的角色移动方向
+        /// </summary>
+        private Face? _currentMoveDirection;
+
         private float _deltaTimeFromChangeIndex = 3;
 
         /// <summary>
@@ -42,22 +48,67 @@ namespace RPGTool
         public Texture2D actorTexture;
 
         /// <summary>
-        ///     动画速度
+        ///     接下来一格预期的角色移动方向
         /// </summary>
-        public float animationSpeed = 1;
+        public Face? expectNextMoveDirection;
 
         /// <summary>
         ///     角色的面向
         /// </summary>
         public Face faceTo = Face.Down;
 
+        /// <summary>
+        ///     角色素材中心
+        /// </summary>
         public Vector2 pivot = new Vector2(0.5f, 0.25f);
 
         public int pixelPerTexture = 32;
 
+        /// <summary>
+        ///     角色速度
+        /// </summary>
+        public float speed = 2;
+
+        /// <summary>
+        ///     动画速度
+        /// </summary>
+        public float AnimationSpeed => speed;
+
         public GridTransform GridTransform { get; private set; }
         public SpriteRenderer SpriteRenderer { get; private set; }
-        public TileCollider TileCollider { get; private set; }
+
+        public List<Vector2Int> JointPositions { get; private set; } = new List<Vector2Int>();
+
+        public void OnSave(BinaryWriter stream)
+        {
+            DataSaver.Save(GridTransform.position, stream);
+            DataSaver.Save(faceTo, stream);
+        }
+
+        public void OnLoad(BinaryReader stream)
+        {
+            GridTransform = GetComponent<GridTransform>();
+            GridTransform.ResetMovement();
+            GridTransform.position = DataLoader.Load<Vector2Int>(stream);
+            faceTo = DataLoader.Load<Face>(stream);
+        }
+
+        public static Vector2Int FaceToVector(Face face)
+        {
+            switch (face)
+            {
+                case Face.Up:
+                    return Vector2Int.up;
+                case Face.Down:
+                    return Vector2Int.down;
+                case Face.Left:
+                    return Vector2Int.left;
+                case Face.Right:
+                    return Vector2Int.right;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
         private void Awake()
         {
@@ -73,7 +124,15 @@ namespace RPGTool
             actorTexture.filterMode = FilterMode.Point;
             GridTransform = GetComponent<GridTransform>();
             SpriteRenderer = GetComponent<SpriteRenderer>();
-            TileCollider = GetComponent<TileCollider>();
+        }
+
+        private void Start()
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+                return;
+#endif
+            AddJointPoint(GridTransform.position);
         }
 
         private Sprite GetSprite(int index)
@@ -89,6 +148,42 @@ namespace RPGTool
         private void Update()
         {
 #if UNITY_EDITOR
+            if (Application.isPlaying)
+            {
+#endif
+                UpdateMovement();
+                UpdateCollider();
+#if UNITY_EDITOR
+            }
+#endif
+            UpdateAnima();
+        }
+
+        /// <summary>
+        ///     刷新移动判断
+        /// </summary>
+        private void UpdateMovement()
+        {
+            if (GridTransform.IsMoving || expectNextMoveDirection == null)
+                return;
+
+            faceTo = expectNextMoveDirection ?? faceTo;
+            _currentMoveDirection = expectNextMoveDirection;
+            var directionVector = FaceToVector(faceTo);
+            if (CanMoveIn(
+                SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + directionVector)))
+            {
+                GridTransform.Move(directionVector, 1 / speed);
+                expectNextMoveDirection = null;
+            }
+        }
+
+        /// <summary>
+        ///     刷新动画
+        /// </summary>
+        private void UpdateAnima()
+        {
+#if UNITY_EDITOR
             if (!Application.isPlaying)
             {
                 if (_nowSpriteFace != faceTo)
@@ -100,7 +195,7 @@ namespace RPGTool
             else
 #endif
             {
-                SwitchNextSprite(!GridTransform || !(GridTransform.IsMoving || GridTransform.InWalkingAnim));
+                SwitchNextSprite(!GridTransform || GridTransform.MovingCoroutine == null);
             }
         }
 
@@ -112,7 +207,7 @@ namespace RPGTool
         public void SwitchNextSprite(bool isStop)
         {
             _deltaTimeFromChangeIndex += Time.deltaTime;
-            var timePerFrame = 1.0f / animationSpeed / 3.0f;
+            var timePerFrame = 1.0f / AnimationSpeed / 4f;
 
             if (isStop)
             {
@@ -120,11 +215,15 @@ namespace RPGTool
                 _deltaTimeFromChangeIndex = 0;
                 _movingStage = 0;
             }
-            else if (_deltaTimeFromChangeIndex >= timePerFrame)
+            else
             {
-                _deltaTimeFromChangeIndex %= timePerFrame;
+                if (_deltaTimeFromChangeIndex >= timePerFrame)
+                {
+                    _deltaTimeFromChangeIndex %= timePerFrame;
 
-                ++_movingStage;
+                    ++_movingStage;
+                }
+
                 int imageIndex;
                 switch (_movingStage)
                 {
@@ -164,19 +263,54 @@ namespace RPGTool
             return infoTile.tileType == InfoTile.TileType.Ground;
         }
 
-
-        public void OnSave(BinaryWriter stream)
+        /// <summary>
+        ///     刷新碰撞箱
+        /// </summary>
+        private void UpdateCollider()
         {
-            DataSaver.Save(GridTransform.position, stream);
-            DataSaver.Save(faceTo, stream);
+            if (GridTransform.IsMoving)
+            {
+                var newJointPosition = new List<Vector2Int>();
+
+                var directionVector = FaceToVector(_currentMoveDirection ?? faceTo);
+
+                newJointPosition.Add(GridTransform.position + directionVector);
+                newJointPosition.Add(GridTransform.position);
+                UpdateJointPos(newJointPosition);
+            }
+            else
+            {
+                UpdateJointPos(new List<Vector2Int> {GridTransform.position});
+            }
         }
 
-        public void OnLoad(BinaryReader stream)
+        /// <summary>
+        ///     增加碰撞相交点
+        /// </summary>
+        /// <param name="point"></param>
+        public void AddJointPoint(Vector2Int point)
         {
-            GridTransform = GetComponent<GridTransform>();
-            GridTransform.ResetMovement();
-            GridTransform.position = DataLoader.Load<Vector2Int>(stream);
-            faceTo = DataLoader.Load<Face>(stream);
+            JointPositions.Add(point);
+            SceneInfo.sceneInfo.infoTilemap.SetTileInfo(point, true);
+        }
+
+        /// <summary>
+        ///     刷新碰撞相交点
+        /// </summary>
+        /// <param name="newJointPosition">碰撞橡胶垫列表</param>
+        private void UpdateJointPos(List<Vector2Int> newJointPosition)
+        {
+            //新的站位
+            foreach (var pos in newJointPosition)
+                if (!JointPositions.Contains(pos))
+                    SceneInfo.sceneInfo.infoTilemap.SetTileInfo(pos, true);
+
+            //旧的站位
+            foreach (var pos in JointPositions)
+                if (!newJointPosition.Contains(pos))
+                    SceneInfo.sceneInfo.infoTilemap.SetTileInfo(pos, false);
+
+            JointPositions = newJointPosition;
         }
     }
 }

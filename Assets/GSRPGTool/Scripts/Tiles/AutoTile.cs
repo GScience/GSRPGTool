@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-
 #if UNITY_EDITOR
 using UnityEditor.SceneManagement;
+
 #endif
 
 namespace RPGTool.Tiles
@@ -139,8 +139,10 @@ namespace RPGTool.Tiles
                 var currentTileInfo =
                     SceneInfo.sceneInfo.infoTilemap.GetTileInfo(new Vector2Int(position.x, position.y));
 
-                if (currentTileInfo.tileType == InfoTile.TileType.Ground || currentTileInfo.tileType == InfoTile.TileType.Void)
-                    SceneInfo.sceneInfo.infoTilemap.SetTileInfo(new Vector2Int(position.x, position.y), tileType, currentTileInfo.hasActor);
+                if (currentTileInfo.tileType == InfoTile.TileType.Ground ||
+                    currentTileInfo.tileType == InfoTile.TileType.Void)
+                    SceneInfo.sceneInfo.infoTilemap.SetTileInfo(new Vector2Int(position.x, position.y), tileType,
+                        currentTileInfo.hasActor);
             }
 
             return true;

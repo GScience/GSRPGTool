@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace RPGTool.Save
 {
@@ -19,7 +14,7 @@ namespace RPGTool.Save
     {
         public void Save(object data, BinaryWriter stream)
         {
-            stream.Write((ushort)data);
+            stream.Write((ushort) data);
         }
     }
 
@@ -35,7 +30,7 @@ namespace RPGTool.Save
     {
         public void Save(object data, BinaryWriter stream)
         {
-            stream.Write((uint)data);
+            stream.Write((uint) data);
         }
     }
 
@@ -51,7 +46,7 @@ namespace RPGTool.Save
     {
         public void Save(object data, BinaryWriter stream)
         {
-            stream.Write((ulong)data);
+            stream.Write((ulong) data);
         }
     }
 
@@ -67,7 +62,7 @@ namespace RPGTool.Save
     {
         public void Save(object data, BinaryWriter stream)
         {
-            stream.Write((short)data);
+            stream.Write((short) data);
         }
     }
 
@@ -83,7 +78,7 @@ namespace RPGTool.Save
     {
         public void Save(object data, BinaryWriter stream)
         {
-            stream.Write((int)data);
+            stream.Write((int) data);
         }
     }
 
@@ -99,7 +94,7 @@ namespace RPGTool.Save
     {
         public void Save(object data, BinaryWriter stream)
         {
-            stream.Write((long)data);
+            stream.Write((long) data);
         }
     }
 
@@ -115,7 +110,7 @@ namespace RPGTool.Save
     {
         public void Save(object data, BinaryWriter stream)
         {
-            stream.Write((double)data);
+            stream.Write((double) data);
         }
     }
 
@@ -131,7 +126,7 @@ namespace RPGTool.Save
     {
         public void Save(object data, BinaryWriter stream)
         {
-            stream.Write((string)data);
+            stream.Write((string) data);
         }
     }
 
@@ -147,7 +142,7 @@ namespace RPGTool.Save
     {
         public void Save(object data, BinaryWriter stream)
         {
-            stream.Write((bool)data);
+            stream.Write((bool) data);
         }
     }
 }

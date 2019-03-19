@@ -1,5 +1,4 @@
-﻿using RPGTool.Physical;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace RPGTool
 {
@@ -13,7 +12,7 @@ namespace RPGTool
         /// <summary>
         ///     玩家
         /// </summary>
-        public TileRigidbody player;
+        public Actor player;
 
         /// <summary>
         ///     玩家坐标
@@ -45,15 +44,15 @@ namespace RPGTool
 
             //移动刷新
             if (Input.GetKey(KeyCode.W))
-                player.SetMoveDirection(Actor.Face.Up);
+                player.expectNextMoveDirection = Actor.Face.Up;
             else if (Input.GetKey(KeyCode.S))
-                player.SetMoveDirection(Actor.Face.Down);
+                player.expectNextMoveDirection = Actor.Face.Down;
             else if (Input.GetKey(KeyCode.A))
-                player.SetMoveDirection(Actor.Face.Left);
+                player.expectNextMoveDirection = Actor.Face.Left;
             else if (Input.GetKey(KeyCode.D))
-                player.SetMoveDirection(Actor.Face.Right);
+                player.expectNextMoveDirection = Actor.Face.Right;
             else
-                player.SetMoveDirection();
+                player.expectNextMoveDirection = null;
         }
     }
 }

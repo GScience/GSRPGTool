@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RPGTool.Save
 {
@@ -15,7 +12,8 @@ namespace RPGTool.Save
         {
             foreach (var type in typeof(DataLoader).Assembly.DefinedTypes)
                 if (!type.IsAbstract && typeof(IDataSaver).IsAssignableFrom(type))
-                    _dataSavers[type.Name.Substring(0, type.Name.Length - "Saver".Length).ToLower()] = (IDataSaver)Activator.CreateInstance(type);
+                    _dataSavers[type.Name.Substring(0, type.Name.Length - "Saver".Length).ToLower()] =
+                        (IDataSaver) Activator.CreateInstance(type);
         }
 
         public static void Save<T>(T data, BinaryWriter stream)

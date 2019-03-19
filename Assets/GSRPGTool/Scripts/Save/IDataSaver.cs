@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace RPGTool.Save
 {
-    interface IDataSaver
+    internal interface IDataSaver
     {
         void Save(object data, BinaryWriter stream);
     }

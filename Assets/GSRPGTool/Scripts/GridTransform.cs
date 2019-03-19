@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.IO;
-using RPGTool.Save;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace RPGTool
 {
@@ -64,11 +60,6 @@ namespace RPGTool
 #endif
         }
 
-        /// <summary>
-        /// 是否在移动缓冲帧
-        /// </summary>
-        public bool InWalkingAnim = false;
-
         private void Update()
         {
 #if UNITY_EDITOR
@@ -78,21 +69,8 @@ namespace RPGTool
                     (int) (transform.position.y - offset.y));
 #endif
             //重置移动状态
-            if (InWalkingAnim)
-            {
-                InWalkingAnim = false;
-            }
-            if (MovingCoroutine == null && IsMoving)
-            {
-                InWalkingAnim = true;
-                IsMoving = false;
+            if (MovingCoroutine == null)
                 _movementOffset = Vector2.zero;
-            }
-            else if (MovingCoroutine != null)
-            {
-                IsMoving = true;
-                InWalkingAnim = false;
-            }
 
             //移动
             transform.position = new Vector3(position.x + offset.x + _movementOffset.x,
@@ -122,9 +100,11 @@ namespace RPGTool
         /// <param name="resistance"> 移动的阻力</param>
         public void MoveTo(Vector2Int to, float resistance)
         {
-            if (MovingCoroutine != null)
+            if (IsMoving)
                 throw new ArgumentException("A moving task is doing by this transform");
 
+            if (MovingCoroutine != null)
+                StopCoroutine(MovingCoroutine);
             MovingCoroutine = StartCoroutine(CoroutineMoveTo(to, resistance));
         }
 
@@ -133,8 +113,13 @@ namespace RPGTool
         /// <param name="resistance"> 移动的阻力</param>
         private IEnumerator CoroutineMoveTo(Vector2Int to, float resistance)
         {
+            IsMoving = true;
             var lockedPos = position;
             var distance = new Vector2(to.x - lockedPos.x, to.y - lockedPos.y);
+
+            _movementOffset = distance.x > distance.y
+                ? new Vector2(_movementOffset.x, 0)
+                : new Vector2(0, _movementOffset.y);
 
             while (true)
             {
@@ -171,7 +156,11 @@ namespace RPGTool
 
                 //如果移动到了目的地则停止
                 if (deltaPos.x * distance.x >= 0 && deltaPos.y * distance.y >= 0)
+                {
+                    IsMoving = false;
+                    yield return 0;
                     break;
+                }
 
                 yield return 0;
             }
@@ -189,7 +178,6 @@ namespace RPGTool
 
             _movementOffset = Vector2.zero;
             IsMoving = false;
-            InWalkingAnim = false;
         }
     }
 }

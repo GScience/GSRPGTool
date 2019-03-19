@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
+using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 
 namespace RPGTool.Save
 {
     public class SaveManager : MonoBehaviour
     {
-        void Awake()
+        private void Awake()
         {
             Load();
         }
 
-        void Update()
+        private void Update()
         {
             if (Input.GetKeyDown(KeyCode.O))
                 Save();
@@ -46,6 +43,7 @@ namespace RPGTool.Save
                 writer.Write(id);
                 savable.OnSave(writer);
             }
+
             writer.Write(false);
             writer.Close();
         }

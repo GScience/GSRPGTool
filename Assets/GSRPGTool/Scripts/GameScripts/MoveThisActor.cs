@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System.IO;
+﻿using System.IO;
+using UnityEngine;
 
 namespace RPGTool.GameScrpits
 {
@@ -26,7 +25,7 @@ namespace RPGTool.GameScrpits
         }
 
 
-        void Start()
+        private void Start()
         {
             RunScript();
         }

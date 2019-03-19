@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using UnityEngine;
 
 namespace RPGTool.Save
@@ -11,7 +9,7 @@ namespace RPGTool.Save
         {
             public object Load(BinaryReader stream)
             {
-                var vec = new Vector2Int()
+                var vec = new Vector2Int
                 {
                     x = stream.ReadInt32(),
                     y = stream.ReadInt32()
@@ -24,7 +22,7 @@ namespace RPGTool.Save
         {
             public void Save(object data, BinaryWriter stream)
             {
-                var vec = (Vector2Int)data;
+                var vec = (Vector2Int) data;
                 stream.Write(vec.x);
                 stream.Write(vec.y);
             }
@@ -34,7 +32,7 @@ namespace RPGTool.Save
         {
             public object Load(BinaryReader stream)
             {
-                var vec = new Vector3Int()
+                var vec = new Vector3Int
                 {
                     x = stream.ReadInt32(),
                     y = stream.ReadInt32(),
@@ -48,7 +46,7 @@ namespace RPGTool.Save
         {
             public void Save(object data, BinaryWriter stream)
             {
-                var vec = (Vector3Int)data;
+                var vec = (Vector3Int) data;
                 stream.Write(vec.x);
                 stream.Write(vec.y);
                 stream.Write(vec.z);
@@ -59,10 +57,10 @@ namespace RPGTool.Save
         {
             public object Load(BinaryReader stream)
             {
-                var vec = new Vector2()
+                var vec = new Vector2
                 {
-                    x = (float)stream.ReadDouble(),
-                    y = (float)stream.ReadDouble()
+                    x = (float) stream.ReadDouble(),
+                    y = (float) stream.ReadDouble()
                 };
                 return vec;
             }
@@ -72,9 +70,9 @@ namespace RPGTool.Save
         {
             public void Save(object data, BinaryWriter stream)
             {
-                var vec = (Vector2)data;
-                stream.Write((double)vec.x);
-                stream.Write((double)vec.y);
+                var vec = (Vector2) data;
+                stream.Write((double) vec.x);
+                stream.Write((double) vec.y);
             }
         }
 
@@ -82,11 +80,11 @@ namespace RPGTool.Save
         {
             public object Load(BinaryReader stream)
             {
-                var vec = new Vector3()
+                var vec = new Vector3
                 {
-                    x = (float)stream.ReadDouble(),
-                    y = (float)stream.ReadDouble(),
-                    z = (float)stream.ReadDouble()
+                    x = (float) stream.ReadDouble(),
+                    y = (float) stream.ReadDouble(),
+                    z = (float) stream.ReadDouble()
                 };
                 return vec;
             }
@@ -96,10 +94,10 @@ namespace RPGTool.Save
         {
             public void Save(object data, BinaryWriter stream)
             {
-                var vec = (Vector3)data;
-                stream.Write((double)vec.x);
-                stream.Write((double)vec.y);
-                stream.Write((double)vec.z);
+                var vec = (Vector3) data;
+                stream.Write((double) vec.x);
+                stream.Write((double) vec.y);
+                stream.Write((double) vec.z);
             }
         }
     }
