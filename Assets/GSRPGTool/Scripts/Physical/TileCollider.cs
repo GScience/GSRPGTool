@@ -40,6 +40,8 @@ namespace RPGTool.Physical
 
         private void UpdateJointPos(List<Vector2Int> newJointPosition)
         {
+            if (newJointPosition.Count == 0)
+                return;
             //新的站位
             foreach (var pos in newJointPosition)
                 if (!JointPositions.Contains(pos))

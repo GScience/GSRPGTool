@@ -7,7 +7,7 @@ using UnityEngine;
 namespace RPGTool
 {
     [ExecuteInEditMode]
-    [RequireComponent(typeof(SpriteRenderer))]
+    [RequireComponent(typeof(SpriteRenderer), typeof(TileRigidbody))]
     public class Actor : MonoBehaviour, ISavable
     {
         /// <summary>

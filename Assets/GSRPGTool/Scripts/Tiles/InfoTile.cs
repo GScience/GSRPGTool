@@ -57,7 +57,7 @@ namespace RPGTool.Tiles
         {
             tileData.flags = TileFlags.LockAll;
 #if UNITY_EDITOR
-            tileData.color = tileType >= TileType.Count ? new Color(1, 0.5f, 1, 0.1f) : _infoTileColor[(int) tileType];
+            tileData.color = hasActor ? new Color(1, 0f, 0, 0.5f) : _infoTileColor[(int) tileType];
 #endif
             if (movementInfoTileSprite == null)
             {

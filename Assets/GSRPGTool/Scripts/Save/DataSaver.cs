@@ -20,6 +20,7 @@ namespace RPGTool.Save
 
         public static void Save<T>(T data, BinaryWriter stream)
         {
+            var typeName = typeof(T).Name;
             if (typeof(T).IsEnum)
                 _dataSavers["int"].Save(data, stream);
             else

@@ -13,6 +13,8 @@ namespace RPGTool.Physical
         /// </summary>
         public float speed = 2;
 
+        public bool isKinematic = false;
+
         public GridTransform GridTransform { get; private set; }
         public TileCollider TileCollider { get; private set; }
         public Actor Actor { get; private set; }
@@ -49,28 +51,29 @@ namespace RPGTool.Physical
         private void UpdateMovement(Actor.Face direction)
         {
             if (Actor == null || Actor.faceTo == direction)
+            {
                 switch (_movement)
                 {
                     case Actor.Face.Up:
-                        if (Actor == null ||
+                        if (Actor == null || isKinematic ||
                             Actor.CanMoveIn(
                                 SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + Vector2Int.up)))
                             GridTransform.Move(Vector2Int.up, 1 / speed);
                         break;
                     case Actor.Face.Down:
-                        if (Actor == null ||
+                        if (Actor == null || isKinematic ||
                             Actor.CanMoveIn(
                                 SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + Vector2Int.down)))
                             GridTransform.Move(Vector2Int.down, 1 / speed);
                         break;
                     case Actor.Face.Left:
-                        if (Actor == null ||
+                        if (Actor == null || isKinematic ||
                             Actor.CanMoveIn(
                                 SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + Vector2Int.left)))
                             GridTransform.Move(Vector2Int.left, 1 / speed);
                         break;
                     case Actor.Face.Right:
-                        if (Actor == null ||
+                        if (Actor == null || isKinematic ||
                             Actor.CanMoveIn(
                                 SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + Vector2Int.right)))
                             GridTransform.Move(Vector2Int.right, 1 / speed);
@@ -78,6 +81,8 @@ namespace RPGTool.Physical
                     default:
                         throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
                 }
+                _movement = null;
+            }
             else if (Actor != null)
                 Actor.faceTo = direction;
         }

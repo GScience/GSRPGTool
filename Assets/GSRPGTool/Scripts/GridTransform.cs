@@ -89,7 +89,7 @@ namespace RPGTool
 
             //设置深度
             if (SpriteRenderer != null)
-                SpriteRenderer.sortingOrder = int.MaxValue - (int) transform.position.y;
+                SpriteRenderer.sortingOrder = -position.y;
         }
 
         /// <summary>
