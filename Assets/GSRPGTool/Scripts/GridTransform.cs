@@ -64,6 +64,11 @@ namespace RPGTool
 #endif
         }
 
+        /// <summary>
+        /// 是否在移动缓冲帧
+        /// </summary>
+        public bool InWalkingAnim = false;
+
         private void Update()
         {
 #if UNITY_EDITOR
@@ -73,14 +78,20 @@ namespace RPGTool
                     (int) (transform.position.y - offset.y));
 #endif
             //重置移动状态
+            if (InWalkingAnim)
+            {
+                InWalkingAnim = false;
+            }
             if (MovingCoroutine == null && IsMoving)
             {
+                InWalkingAnim = true;
                 IsMoving = false;
                 _movementOffset = Vector2.zero;
             }
             else if (MovingCoroutine != null)
             {
                 IsMoving = true;
+                InWalkingAnim = false;
             }
 
             //移动
@@ -178,6 +189,7 @@ namespace RPGTool
 
             _movementOffset = Vector2.zero;
             IsMoving = false;
+            InWalkingAnim = false;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace RPGTool.Save
 {
     public class SaveManager : MonoBehaviour
     {
-        void Start()
+        void Awake()
         {
             Load();
         }

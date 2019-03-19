@@ -100,7 +100,7 @@ namespace RPGTool
             else
 #endif
             {
-                SwitchNextSprite(!GridTransform || !GridTransform.IsMoving);
+                SwitchNextSprite(!GridTransform || !(GridTransform.IsMoving || GridTransform.InWalkingAnim));
             }
         }
 
@@ -173,6 +173,7 @@ namespace RPGTool
 
         public void OnLoad(BinaryReader stream)
         {
+            GridTransform = GetComponent<GridTransform>();
             GridTransform.ResetMovement();
             GridTransform.position = DataLoader.Load<Vector2Int>(stream);
             faceTo = DataLoader.Load<Face>(stream);

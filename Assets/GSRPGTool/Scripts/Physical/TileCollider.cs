@@ -15,6 +15,10 @@ namespace RPGTool.Physical
             GridTransform = GetComponent<GridTransform>();
         }
 
+        private void Start()
+        {
+            AddJointPoint(GridTransform.position);
+        }
         void Update()
         {
             if (GridTransform.IsMoving)

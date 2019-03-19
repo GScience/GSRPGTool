@@ -13,9 +13,15 @@ namespace RPGTool.GameScrpits
             MoveActor(actor, Actor.Face.Down, 2);
             MoveActor(actor, Actor.Face.Down, 2);
             MoveActor(actor, Actor.Face.Down, 2);
+            MoveActor(actor, Actor.Face.Left, 2);
+            MoveActor(actor, Actor.Face.Left, 2);
+            MoveActor(actor, Actor.Face.Left, 2);
             MoveActor(actor, Actor.Face.Up, 2);
             MoveActor(actor, Actor.Face.Up, 2);
             MoveActor(actor, Actor.Face.Up, 2);
+            MoveActor(actor, Actor.Face.Right, 2);
+            MoveActor(actor, Actor.Face.Right, 2);
+            MoveActor(actor, Actor.Face.Right, 2);
             JumpTo(0);
         }
 

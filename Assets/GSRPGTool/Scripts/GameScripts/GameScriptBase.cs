@@ -31,6 +31,11 @@ namespace RPGTool.GameScrpits
         }
 
         /// <summary>
+        /// 是否正在运行
+        /// </summary>
+        private bool _isRunning = false;
+
+        /// <summary>
         /// 当前执行到的位置
         /// </summary>
         private uint _runPos = 0;
@@ -68,6 +73,7 @@ namespace RPGTool.GameScrpits
         public int MoveActor(Actor actor, Actor.Face moveTo, float speed)
         {
             var rigidbody = actor.GetComponent<TileRigidbody>();
+            var gritTransform = actor.GetComponent<GridTransform>();
             var startPos = actor.GridTransform.position;
             actionList.Add(new ScriptAction()
             {
@@ -84,34 +90,21 @@ namespace RPGTool.GameScrpits
                     {
                         case Actor.Face.Up:
                             if (offset == Vector2Int.up)
-                            {
-                                rigidbody.SetMoveDirection(null);
                                 return true;
-                            }
                             break;
                         case Actor.Face.Down:
                             if (offset == Vector2Int.down)
-                            {
-                                rigidbody.SetMoveDirection(null);
                                 return true;
-                            }
                             break;
                         case Actor.Face.Left:
                             if (offset == Vector2Int.left)
-                            {
-                                rigidbody.SetMoveDirection(null);
                                 return true;
-                            }
                             break;
                         case Actor.Face.Right:
                             if (offset == Vector2Int.right)
-                            {
-                                rigidbody.SetMoveDirection(null);
                                 return true;
-                            }
                             break;
                     }
-                    rigidbody.SetMoveDirection(moveTo);
                     return false;
                 }
             });
@@ -153,6 +146,7 @@ namespace RPGTool.GameScrpits
             actionList.Clear();
             Do();
             actionList[(int)_runPos].OnStart();
+            _isRunning = true;
         }
 
         public abstract void Do();
@@ -160,12 +154,16 @@ namespace RPGTool.GameScrpits
         public virtual void OnSave(BinaryWriter stream)
         {
             DataSaver.Save(_runPos, stream);
+            DataSaver.Save(_isRunning, stream);
         }
 
         public virtual void OnLoad(BinaryReader stream)
         {
             _runPos = DataLoader.Load<uint>(stream);
-            RunScript();
+            _isRunning = DataLoader.Load<bool>(stream);
+
+            if (_isRunning)
+                RunScript();
         }
     }
 }

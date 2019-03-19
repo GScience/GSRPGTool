@@ -135,7 +135,7 @@ namespace RPGTool.Save
         }
     }
 
-    public class BoolLoader : IDataLoader
+    public class BooleanLoader : IDataLoader
     {
         public object Load(BinaryReader stream)
         {
@@ -143,7 +143,7 @@ namespace RPGTool.Save
         }
     }
 
-    public class BoolSaver : IDataSaver
+    public class BooleanSaver : IDataSaver
     {
         public void Save(object data, BinaryWriter stream)
         {

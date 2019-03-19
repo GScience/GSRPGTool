@@ -34,7 +34,6 @@ namespace RPGTool.Physical
 
         /// <summary>
         ///     向指定方向移动一次
-        ///     转向也算一次
         /// </summary>
         /// <param name="direction">方向，默认为null</param>
         public void SetMoveDirection(Actor.Face? direction = null)
@@ -42,7 +41,7 @@ namespace RPGTool.Physical
             _movement = direction;
         }
 
-        private void LateUpdate()
+        public void LateUpdate()
         {
             if (GridTransform.MovingCoroutine == null && _movement != null)
                 UpdateMovement(_movement.Value);
@@ -58,45 +57,39 @@ namespace RPGTool.Physical
                         if (Actor == null || isKinematic ||
                             Actor.CanMoveIn(
                                 SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + Vector2Int.up)))
-                        {
-                            GridTransform.Move(Vector2Int.up, 1 / speed);
-                            TileCollider.AddJointPoint(Vector2Int.up + Actor.GridTransform.position);
-                        }
+                            ApplyMovement(Vector2Int.up);
                         break;
                     case Actor.Face.Down:
                         if (Actor == null || isKinematic ||
                             Actor.CanMoveIn(
                                 SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + Vector2Int.down)))
-                        {
-                            GridTransform.Move(Vector2Int.down, 1 / speed);
-                            TileCollider.AddJointPoint(Vector2Int.down + Actor.GridTransform.position);
-                        }
+                            ApplyMovement(Vector2Int.down);
                         break;
                     case Actor.Face.Left:
                         if (Actor == null || isKinematic ||
                             Actor.CanMoveIn(
                                 SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + Vector2Int.left)))
-                        {
-                            GridTransform.Move(Vector2Int.left, 1 / speed);
-                            TileCollider.AddJointPoint(Vector2Int.left + Actor.GridTransform.position);
-                        }
+                            ApplyMovement(Vector2Int.left);
                         break;
                     case Actor.Face.Right:
                         if (Actor == null || isKinematic ||
                             Actor.CanMoveIn(
                                 SceneInfo.sceneInfo.infoTilemap.GetTileInfo(GridTransform.position + Vector2Int.right)))
-                        {
-                            GridTransform.Move(Vector2Int.right, 1 / speed);
-                            TileCollider.AddJointPoint(Vector2Int.right + Actor.GridTransform.position);
-                        }
+                            ApplyMovement(Vector2Int.right);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
                 }
-                _movement = null;
             }
             else if (Actor != null)
                 Actor.faceTo = direction;
+        }
+
+        void ApplyMovement(Vector2Int direction)
+        {
+            _movement = null;
+            GridTransform.Move(direction, 1 / speed);
+            TileCollider.AddJointPoint(direction + Actor.GridTransform.position);
         }
     }
 }

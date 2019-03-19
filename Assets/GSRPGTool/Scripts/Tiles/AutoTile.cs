@@ -140,7 +140,7 @@ namespace RPGTool.Tiles
                     SceneInfo.sceneInfo.infoTilemap.GetTileInfo(new Vector2Int(position.x, position.y));
 
                 if (currentTileInfo.tileType == InfoTile.TileType.Ground || currentTileInfo.tileType == InfoTile.TileType.Void)
-                    SceneInfo.sceneInfo.infoTilemap.SetTileInfo(new Vector2Int(position.x, position.y), tileType, false);
+                    SceneInfo.sceneInfo.infoTilemap.SetTileInfo(new Vector2Int(position.x, position.y), tileType, currentTileInfo.hasActor);
             }
 
             return true;
