@@ -117,7 +117,7 @@ namespace RPGTool
             var lockedPos = position;
             var distance = new Vector2(to.x - lockedPos.x, to.y - lockedPos.y);
 
-            _movementOffset = distance.x > distance.y
+            _movementOffset = Math.Abs(distance.x) > Math.Abs(distance.y)
                 ? new Vector2(_movementOffset.x, 0)
                 : new Vector2(0, _movementOffset.y);
 
