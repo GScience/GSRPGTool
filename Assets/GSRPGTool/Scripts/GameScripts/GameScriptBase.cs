@@ -168,7 +168,10 @@ namespace RPGTool.GameScrpits
                     if (!string.IsNullOrEmpty(sceneName))
                     {
                         ++_runPos;
-                        SaveManager.saveManager.SaveCurrentScene();
+#if UNITY_EDITOR
+                        if (SaveManager.saveManager)
+#endif
+                            SaveManager.saveManager.SaveCurrentScene();
                         SceneManager.LoadScene(sceneName);
                     }
                     SceneManager.sceneLoaded += (Scene arg0, LoadSceneMode arg1)=>
