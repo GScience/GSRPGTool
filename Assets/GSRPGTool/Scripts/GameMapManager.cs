@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using RPGTool.System;
+using UnityEngine;
 
 namespace RPGTool
 {
@@ -31,6 +32,22 @@ namespace RPGTool
         /// </summary>
         public InfoTilemap infoTilemap;
 
+        /// <summary>
+        /// 对话框
+        /// </summary>
+        public Dialog mainDialog;
+
+        /// <summary>
+        /// 屏蔽玩家交互
+        /// </summary>
+        public bool IgnorePlayerInteract
+        {
+            get
+            {
+                return mainDialog.PrintingPaused || mainDialog.Message.Length != 0;
+            }
+        }
+
         private void Awake()
         {
             gameMapManager = this;
@@ -43,13 +60,14 @@ namespace RPGTool
 
         private void Update()
         {
-            UpdatePlayerTransform();
+            if (!IgnorePlayerInteract)
+                UpdatePlayerInteract();
         }
 
         /// <summary>
         ///     刷新玩家的移动信息
         /// </summary>
-        private void UpdatePlayerTransform()
+        private void UpdatePlayerInteract()
         {
             if (player == null
 #if UNITY_EDITOR

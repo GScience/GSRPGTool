@@ -65,6 +65,7 @@ namespace RPGTool.GameScrpits
 
         /// <summary>
         ///     判断分支执行
+        ///     <para>只支持以阻塞形式调用</para>
         /// </summary>
         /// <typeparam name="T">自动推断判断的类型</typeparam>
         /// <param name="checkFunc">获取判断值</param>
@@ -81,6 +82,7 @@ namespace RPGTool.GameScrpits
 
         /// <summary>
         ///     向指定方向移动角色一格
+        ///     <para>只支持以阻塞形式调用</para>
         /// </summary>
         /// <param name="actor">移动的角色</param>
         /// <param name="moveTo">移动的方向</param>
@@ -108,6 +110,7 @@ namespace RPGTool.GameScrpits
 
         /// <summary>
         ///     跳转到指定位置
+        ///     <para>只支持以阻塞形式调用</para>
         /// </summary>
         /// <param name="where">指定位置</param>
         /// <returns>当前事件Id</returns>
@@ -119,6 +122,30 @@ namespace RPGTool.GameScrpits
                 {
                     _runPos = where;
                     _actionList[(int) _runPos].OnStart();
+                }
+            });
+            return _actionList.Count - 1;
+        }
+
+        /// <summary>
+        /// 显示消息
+        ///     <para>支持阻塞与非阻塞</para>
+        /// </summary>
+        /// <param name="msg">向显示的东西</param>
+        /// <param name="block">是否阻挡事件的执行</param>
+        /// <returns>当前事件Id</returns>
+        public int AddMessage(string msg, bool block)
+        {
+            int pos = 0;
+            _actionList.Add(new ScriptAction("AddMessage")
+            {
+                OnStart = () =>
+                {
+                    pos = GameMapManager.gameMapManager.mainDialog.AddMessage(msg);
+                },
+                OnUpdate = ()=>
+                {
+                    return !block || pos + msg.Length < GameMapManager.gameMapManager.mainDialog.ShownMsgPos;
                 }
             });
             return _actionList.Count - 1;
