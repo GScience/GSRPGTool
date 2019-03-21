@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using RPGTool.Save;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace RPGTool.GameScrpits
 {
@@ -149,6 +150,34 @@ namespace RPGTool.GameScrpits
                 }
             });
             return _actionList.Count - 1;
+        }
+
+        /// <summary>
+        ///     设置玩家位置
+        ///     <para>只支持以阻塞形式调用</para>
+        /// </summary>
+        /// <param name="sceneName">场景名，为null或者为空则代表不改变场景</param>
+        /// /// <param name="pos">新的位置</param>
+        /// <returns>当前事件Id</returns>
+        public int SetPlayerPos(string sceneName, Vector2Int pos)
+        {
+            _actionList.Add(new ScriptAction("SetPlayerPos")
+            {
+                OnStart = () =>
+                {
+                    SceneManager.LoadScene(sceneName);
+                    SceneManager.sceneLoaded += (Scene arg0, LoadSceneMode arg1)=>
+                    {
+                        GameMapManager.gameMapManager.player.GridTransform.position = pos;
+                    };
+                }
+            });
+            return _actionList.Count - 1;
+        }
+
+        private void onSwitchScene(Scene arg0, LoadSceneMode arg1)
+        {
+            throw new NotImplementedException();
         }
 
         private void Update()

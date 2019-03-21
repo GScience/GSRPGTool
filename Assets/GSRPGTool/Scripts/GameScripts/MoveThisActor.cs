@@ -25,6 +25,8 @@ namespace RPGTool.GameScrpits
             MoveActor(actor, Actor.Face.Right, 2);
             MoveActor(actor, Actor.Face.Right, 2);
             MoveActor(actor, Actor.Face.Right, 2);
+
+            SetPlayerPos("Scene 2", new Vector2Int(15, -10));
             JumpTo(0);
         }
 
