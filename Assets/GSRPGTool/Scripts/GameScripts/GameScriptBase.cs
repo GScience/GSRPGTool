@@ -21,18 +21,43 @@ namespace RPGTool.GameScrpits
         /// <summary>
         ///     游戏脚本执行队列
         /// </summary>
-        private readonly List<ScriptAction> actionList = new List<ScriptAction>();
+        private readonly List<ScriptAction> _actionList = new List<ScriptAction>();
 
+        public override int GetHashCode()
+        {
+            init();
+
+            var hashCode = 0;
+            foreach (var action in _actionList)
+                hashCode += action.name.GetHashCode();
+
+            hashCode *= _actionList.Count;
+            return hashCode;
+        }
         public virtual void OnSave(BinaryWriter stream)
         {
+            DataSaver.Save(GetHashCode(), stream);
             DataSaver.Save(_runPos, stream);
             DataSaver.Save(_isRunning, stream);
         }
 
+        private void init()
+        {
+            if (_actionList.Count == 0)
+                Do();
+        }
+
         public virtual void OnLoad(BinaryReader stream)
         {
+            var hashCode = DataLoader.Load<int>(stream);
             _runPos = DataLoader.Load<uint>(stream);
             _isRunning = DataLoader.Load<bool>(stream);
+
+            if (hashCode != GetHashCode())
+            {
+                _runPos = 0;
+                Debug.LogWarning("The sprite has been changed while running it. Reset pos to begin. ");
+            }
 
             if (_isRunning)
                 RunScript();
@@ -47,11 +72,11 @@ namespace RPGTool.GameScrpits
         /// <returns>当前事件Id</returns>
         public int Check<T>(Func<T> checkFunc, Action<T> doWhat)
         {
-            actionList.Add(new ScriptAction
+            _actionList.Add(new ScriptAction("Check")
             {
                 OnStart = () => { doWhat(checkFunc()); }
             });
-            return actionList.Count - 1;
+            return _actionList.Count - 1;
         }
 
         /// <summary>
@@ -63,7 +88,7 @@ namespace RPGTool.GameScrpits
         public int MoveActor(Actor actor, Actor.Face moveTo, float speed)
         {
             var startPos = actor.GridTransform.position;
-            actionList.Add(new ScriptAction
+            _actionList.Add(new ScriptAction("MoveActor")
             {
                 OnStart = () =>
                 {
@@ -78,7 +103,7 @@ namespace RPGTool.GameScrpits
                     return offset == Actor.FaceToVector(moveTo);
                 }
             });
-            return actionList.Count - 1;
+            return _actionList.Count - 1;
         }
 
         /// <summary>
@@ -88,25 +113,25 @@ namespace RPGTool.GameScrpits
         /// <returns>当前事件Id</returns>
         public int JumpTo(uint where)
         {
-            actionList.Add(new ScriptAction
+            _actionList.Add(new ScriptAction("JumpTo")
             {
                 OnStart = () =>
                 {
                     _runPos = where;
-                    actionList[(int) _runPos].OnStart();
+                    _actionList[(int) _runPos].OnStart();
                 }
             });
-            return actionList.Count - 1;
+            return _actionList.Count - 1;
         }
 
         private void Update()
         {
-            if (_runPos >= actionList.Count)
+            if (_runPos >= _actionList.Count)
                 return;
-            var currentAction = actionList[(int) _runPos];
+            var currentAction = _actionList[(int) _runPos];
             if (currentAction.OnUpdate == null || currentAction.OnUpdate())
-                if (++_runPos < actionList.Count)
-                    actionList[(int) _runPos].OnStart();
+                if (++_runPos < _actionList.Count)
+                    _actionList[(int) _runPos].OnStart();
         }
 
         /// <summary>
@@ -114,9 +139,8 @@ namespace RPGTool.GameScrpits
         /// </summary>
         public void RunScript()
         {
-            actionList.Clear();
-            Do();
-            actionList[(int) _runPos].OnStart();
+            init();
+            _actionList[(int) _runPos].OnStart();
             _isRunning = true;
         }
 
@@ -141,6 +165,13 @@ namespace RPGTool.GameScrpits
             ///     如果返回true则代表刷新结束
             /// </summary>
             public UpdateDelegate OnUpdate;
+
+            public readonly string name;
+
+            public ScriptAction(string actionName)
+            {
+                name = actionName;
+            }
         }
     }
 }

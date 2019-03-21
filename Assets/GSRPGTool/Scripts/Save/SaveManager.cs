@@ -17,9 +17,10 @@ namespace RPGTool.Save
                                          SceneManager.GetActiveScene().GetHashCode() + ".sav";
         private void Awake()
         {
-            Debug.Log("Save file locate in " + SavePath);
-            if (SaveName == "")
+            if (string.IsNullOrEmpty(SaveName))
                 SaveName = "Save0";
+
+            Debug.Log("Save file locate in " + SavePath);
 
             LoadCurrentScene();
 

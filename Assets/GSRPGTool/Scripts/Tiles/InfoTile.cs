@@ -22,7 +22,7 @@ namespace RPGTool.Tiles
             new Color(0, 1, 0, 0.1f), //ground
             new Color(1, 0, 0, 0.1f), //wall
             new Color(0, 0, 1, 0.1f), //water
-            new Color(1, 0.5f, 0, 0.1f) //lava
+            new Color(1, 0.5f, 0, 0.1f) //lava 
         };
 #endif
         public static Sprite movementInfoTileSprite;
@@ -31,7 +31,7 @@ namespace RPGTool.Tiles
 
         public TileType tileType = TileType.Void;
 
-        static InfoTile()
+        private static void InitInfoTile()
         {
             for (var i = 0; i < InfoTiles.Length / 2; ++i)
             {
@@ -50,6 +50,8 @@ namespace RPGTool.Tiles
 
         public static InfoTile GetInfoTile(TileType tileType, bool hasActor)
         {
+            if (InfoTiles[0] == null)
+                InitInfoTile();  
             return InfoTiles[(int) tileType + (hasActor ? (int) TileType.Count : 0)];
         }
 

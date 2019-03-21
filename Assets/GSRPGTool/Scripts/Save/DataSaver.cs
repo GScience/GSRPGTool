@@ -20,7 +20,7 @@ namespace RPGTool.Save
         {
             var typeName = typeof(T).Name;
             if (typeof(T).IsEnum)
-                _dataSavers["int"].Save(data, stream);
+                _dataSavers["int32"].Save(data, stream);
             else
                 _dataSavers[typeof(T).Name.ToLower()].Save(data, stream);
         }

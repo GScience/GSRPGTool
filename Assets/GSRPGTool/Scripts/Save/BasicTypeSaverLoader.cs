@@ -66,7 +66,7 @@ namespace RPGTool.Save
         }
     }
 
-    public class IntLoader : IDataLoader
+    public class Int32Loader : IDataLoader
     {
         public object Load(BinaryReader stream)
         {
@@ -74,7 +74,7 @@ namespace RPGTool.Save
         }
     }
 
-    public class IntSaver : IDataSaver
+    public class Int32Saver : IDataSaver
     {
         public void Save(object data, BinaryWriter stream)
         {

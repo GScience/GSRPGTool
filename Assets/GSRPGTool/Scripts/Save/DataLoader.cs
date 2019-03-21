@@ -19,7 +19,7 @@ namespace RPGTool.Save
         public static T Load<T>(BinaryReader stream)
         {
             if (typeof(T).IsEnum)
-                return (T) _dataLoaders["int"].Load(stream);
+                return (T) _dataLoaders["int32"].Load(stream);
 
             return (T) _dataLoaders[typeof(T).Name.ToLower()].Load(stream);
         }

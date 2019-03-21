@@ -8,7 +8,18 @@ namespace RPGTool
         /// <summary>
         /// 全局变量
         /// </summary>
-        public static GameMapManager gameMapManager;
+        public static GameMapManager gameMapManager
+        {
+            get
+            {
+                if (_gameMapManager == null)
+                    _gameMapManager = FindObjectOfType<GameMapManager>();
+                return _gameMapManager;
+            }
+            private set => _gameMapManager = value;
+        }
+
+        private static GameMapManager _gameMapManager;
 
         /// <summary>
         ///     玩家
@@ -32,8 +43,6 @@ namespace RPGTool
 
         private void Update()
         {
-            gameMapManager = this;
-
             UpdatePlayerTransform();
         }
 
