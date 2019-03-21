@@ -9,7 +9,7 @@ namespace RPGTool
 {
     [ExecuteInEditMode]
     [RequireComponent(typeof(SpriteRenderer))]
-    public class Actor : MonoBehaviour, ISavable
+    public class Actor : SavableBehaviour
     {
         /// <summary>
         ///     角色面向
@@ -79,13 +79,13 @@ namespace RPGTool
 
         public List<Vector2Int> JointPositions { get; private set; } = new List<Vector2Int>();
 
-        public void OnSave(BinaryWriter stream)
+        public override void OnSave(BinaryWriter stream)
         {
             DataSaver.Save(GridTransform.position, stream);
             DataSaver.Save(faceTo, stream);
         }
 
-        public void OnLoad(BinaryReader stream)
+        public override void OnLoad(BinaryReader stream)
         {
             GridTransform = GetComponent<GridTransform>();
             GridTransform.ResetMovement();

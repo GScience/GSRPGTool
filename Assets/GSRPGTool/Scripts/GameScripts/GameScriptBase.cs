@@ -7,12 +7,12 @@ using UnityEngine.SceneManagement;
 
 namespace RPGTool.GameScrpits
 {
-    public abstract class GameScriptBase : MonoBehaviour, ISavable
+    public abstract class GameScriptBase : SavableBehaviour
     {
         /// <summary>
         ///     是否正在运行
         /// </summary>
-        private bool _isRunning;
+        private bool _isRunning = false;
 
         /// <summary>
         ///     当前执行到的位置
@@ -26,7 +26,7 @@ namespace RPGTool.GameScrpits
 
         public override int GetHashCode()
         {
-            init();
+            Init();
 
             var hashCode = 0;
             foreach (var action in _actionList)
@@ -35,24 +35,24 @@ namespace RPGTool.GameScrpits
             hashCode *= _actionList.Count;
             return hashCode;
         }
-        public virtual void OnSave(BinaryWriter stream)
+        public override void OnSave(BinaryWriter stream)
         {
             DataSaver.Save(GetHashCode(), stream);
             DataSaver.Save(_runPos, stream);
             DataSaver.Save(_isRunning, stream);
         }
 
-        private void init()
+        private void Init()
         {
             if (_actionList.Count == 0)
                 Do();
         }
 
-        public virtual void OnLoad(BinaryReader stream)
+        public override void OnLoad(BinaryReader stream)
         {
             var hashCode = DataLoader.Load<int>(stream);
             _runPos = DataLoader.Load<uint>(stream);
-            _isRunning = DataLoader.Load<bool>(stream);
+            var isRunning = DataLoader.Load<bool>(stream);
 
             if (hashCode != GetHashCode())
             {
@@ -60,7 +60,7 @@ namespace RPGTool.GameScrpits
                 Debug.LogWarning("The sprite has been changed while running it. Reset pos to begin. ");
             }
 
-            if (_isRunning)
+            if (isRunning)
                 RunScript();
         }
 
@@ -165,7 +165,12 @@ namespace RPGTool.GameScrpits
             {
                 OnStart = () =>
                 {
-                    SceneManager.LoadScene(sceneName);
+                    if (!string.IsNullOrEmpty(sceneName))
+                    {
+                        ++_runPos;
+                        SaveManager.saveManager.SaveCurrentScene();
+                        SceneManager.LoadScene(sceneName);
+                    }
                     SceneManager.sceneLoaded += (Scene arg0, LoadSceneMode arg1)=>
                     {
                         GameMapManager.gameMapManager.player.GridTransform.position = pos;
@@ -173,11 +178,6 @@ namespace RPGTool.GameScrpits
                 }
             });
             return _actionList.Count - 1;
-        }
-
-        private void onSwitchScene(Scene arg0, LoadSceneMode arg1)
-        {
-            throw new NotImplementedException();
         }
 
         private void Update()
@@ -195,7 +195,10 @@ namespace RPGTool.GameScrpits
         /// </summary>
         public void RunScript()
         {
-            init();
+            if (_isRunning)
+                return;
+
+            Init();
             _actionList[(int) _runPos].OnStart();
             _isRunning = true;
         }

@@ -30,7 +30,6 @@ namespace RPGTool.GameScrpits
             JumpTo(0);
         }
 
-
         private void Start()
         {
             RunScript();
