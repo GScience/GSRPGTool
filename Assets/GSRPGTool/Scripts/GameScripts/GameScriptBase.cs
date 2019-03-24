@@ -122,7 +122,7 @@ namespace RPGTool.GameScripts
         /// <returns>当前事件Id</returns>
         public int SetActor(Actor actor, bool isKinematic, float speed = -1)
         {
-            _actionList.Add(new ScriptAction("MoveActor")
+            _actionList.Add(new ScriptAction("SetActor")
             {
                 onStart = () =>
                 {
@@ -156,7 +156,7 @@ namespace RPGTool.GameScripts
         /// <returns>当前事件Id</returns>
         public int BlockInteraction(bool block)
         {
-            _actionList.Add(new ScriptAction("ChangeFace")
+            _actionList.Add(new ScriptAction("BlockInteraction")
             {
                 onStart = () => { GameMapManager.gameMapManager.IgnorePlayerInteract = block; }
             });
@@ -220,27 +220,20 @@ namespace RPGTool.GameScripts
         ///     <para>只支持以阻塞形式调用</para>
         /// </summary>
         /// <param name="sceneName">场景名，为null或者为空则代表不改变场景</param>
-        /// ///
+        /// <param name="faceTo">面向位置</param>
         /// <param name="pos">新的位置</param>
         /// <returns>当前事件Id</returns>
-        public int SetPlayerPos(string sceneName, Vector2Int pos)
+        public int SetPlayerPos(string sceneName, Vector2Int pos, Actor.Face faceTo)
         {
             _actionList.Add(new ScriptAction("SetPlayerPos")
             {
                 onStart = () =>
                 {
-                    if (!string.IsNullOrEmpty(sceneName))
-                    {
-#if UNITY_EDITOR
-                        if (SaveManager.saveManager)
-#endif
-                            SaveManager.saveManager.SaveCurrentScene();
-                    }
-
                     SceneManager.sceneLoaded += (arg0, arg1) =>
                     {
                         GameMapManager.gameMapManager.fader.FadeIn();
                         GameMapManager.gameMapManager.player.GridTransform.position = pos;
+                        GameMapManager.gameMapManager.player.faceTo = faceTo;
                     };
 
                     GameMapManager.gameMapManager.fader.FadeOut();
@@ -250,7 +243,16 @@ namespace RPGTool.GameScripts
                     if (GameMapManager.gameMapManager.fader.IsFinished)
                     {
                         //移动到下一个
+                        if (string.IsNullOrEmpty(sceneName))
+                        {
+                            GameMapManager.gameMapManager.fader.FadeIn();
+                            return true;
+                        }
                         ++_runPos;
+#if UNITY_EDITOR
+                        if (SaveManager.saveManager)
+#endif
+                            SaveManager.saveManager.SaveCurrentScene();
                         SceneManager.LoadScene(sceneName);
                     }
 

@@ -46,7 +46,7 @@ namespace RPGTool.GameScripts
             Wait(0.1f);
             ChangeFace(_doorActor, Actor.Face.Down);
             Wait(0.1f);
-            SetPlayerPos(moveToScene, pos);
+            SetPlayerPos(moveToScene, pos, Actor.Face.Down);
             BlockInteraction(false);
         }
     }

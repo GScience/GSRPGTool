@@ -78,6 +78,7 @@ namespace RPGTool.Save
 
             writer.Write(false);
             writer.Close();
+            saveFile.Close();
         }
 
         public void LoadCurrentScene()
@@ -113,14 +114,17 @@ namespace RPGTool.Save
             }
 
             reader.Close();
+            saveFile.Close();
         }
 
         public void Save()
         {
             SaveCurrentScene();
-            var writer = new BinaryWriter(File.OpenWrite(SaveDir + "/save.sav"));
+            var file = File.OpenWrite(SaveDir + "/save.sav");
+            var writer = new BinaryWriter(file);
             DataSaver.Save(CurrentSceneId, writer);
             writer.Close();
+            file.Close();
         }
 
         public void Load(string saveName)
@@ -129,9 +133,11 @@ namespace RPGTool.Save
 
             if (File.Exists(SaveDir + "/save.sav"))
             {
-                var reader = new BinaryReader(File.OpenRead(SaveDir + "/save.sav"));
+                var file = File.OpenRead(SaveDir + "/save.sav");
+                var reader = new BinaryReader(file);
                 CurrentSceneId = DataLoader.Load<int>(reader);
                 reader.Close();
+                file.Close();
             }
         }
 
