@@ -6,8 +6,31 @@ namespace RPGTool
     [ExecuteInEditMode]
     public class GameMapManager : MonoBehaviour
     {
+        private static GameMapManager _gameMapManager;
+        private bool _ignorePlayerInteract;
+
         /// <summary>
-        /// 全局变量
+        ///     隐藏用canvas
+        /// </summary>
+        public Fader fader;
+
+        /// <summary>
+        ///     地图状态
+        /// </summary>
+        public InfoTilemap infoTilemap;
+
+        /// <summary>
+        ///     对话框
+        /// </summary>
+        public Dialog mainDialog;
+
+        /// <summary>
+        ///     玩家
+        /// </summary>
+        public Actor player;
+
+        /// <summary>
+        ///     全局变量
         /// </summary>
         public static GameMapManager gameMapManager
         {
@@ -20,43 +43,25 @@ namespace RPGTool
             private set => _gameMapManager = value;
         }
 
-        private static GameMapManager _gameMapManager;
-
         /// <summary>
-        ///     玩家
-        /// </summary>
-        public Actor player;
-
-        /// <summary>
-        /// 地图状态
-        /// </summary>
-        public InfoTilemap infoTilemap;
-
-        /// <summary>
-        /// 对话框
-        /// </summary>
-        public Dialog mainDialog;
-
-        /// <summary>
-        /// 屏蔽玩家交互
+        ///     屏蔽玩家交互
         /// </summary>
         public bool IgnorePlayerInteract
         {
-            get
-            {
-                return mainDialog.PrintingPaused || mainDialog.Message.Length != 0;
-            }
-        }
-
-        private void Awake()
-        {
-            gameMapManager = this;
+            get => mainDialog.PrintingPaused || mainDialog.Message.Length != 0 || //对话框自动屏蔽
+                   _ignorePlayerInteract; //手动屏蔽
+            set => _ignorePlayerInteract = value;
         }
 
         /// <summary>
         ///     玩家坐标
         /// </summary>
-        public Vector2Int playerPosition { get; private set; }
+        public Vector2Int PlayerPosition { get; private set; }
+
+        private void Awake()
+        {
+            gameMapManager = this;
+        }
 
         private void Update()
         {
@@ -76,19 +81,20 @@ namespace RPGTool
             )
                 return;
 
-            playerPosition = player.GridTransform.position;
+            PlayerPosition = player.GridTransform.position;
 
             //移动刷新
-            if (Input.GetKey(KeyCode.W))
-                player.expectNextMoveDirection = Actor.Face.Up;
-            else if (Input.GetKey(KeyCode.S))
-                player.expectNextMoveDirection = Actor.Face.Down;
-            else if (Input.GetKey(KeyCode.A))
-                player.expectNextMoveDirection = Actor.Face.Left;
-            else if (Input.GetKey(KeyCode.D))
-                player.expectNextMoveDirection = Actor.Face.Right;
-            else
-                player.expectNextMoveDirection = null;
+            if (!player.GridTransform.IsMoving)
+            {
+                if (Input.GetKey(KeyCode.W))
+                    player.expectNextMoveDirection = Actor.Face.Up;
+                else if (Input.GetKey(KeyCode.S))
+                    player.expectNextMoveDirection = Actor.Face.Down;
+                else if (Input.GetKey(KeyCode.A))
+                    player.expectNextMoveDirection = Actor.Face.Left;
+                else if (Input.GetKey(KeyCode.D))
+                    player.expectNextMoveDirection = Actor.Face.Right;
+            }
         }
     }
 }

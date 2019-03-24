@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace RPGTool.System
@@ -9,38 +7,38 @@ namespace RPGTool.System
     public class Dialog : MonoBehaviour
     {
         /// <summary>
-        /// 显示的消息
+        ///     打印延迟
+        /// </summary>
+        private float _mDeltaTime;
+
+        public float printSpeed = 10;
+
+        /// <summary>
+        ///     显示的消息
         /// </summary>
         public string Message { get; private set; } = "";
 
         /// <summary>
-        /// 是否暂停打印文字
+        ///     是否暂停打印文字
         /// </summary>
-        public bool PrintingPaused { get; private set; } = false;
+        public bool PrintingPaused { get; private set; }
 
         /// <summary>
-        /// 打印延迟
+        ///     现在显示的消息所在的位置
         /// </summary>
-        private float _mDeltaTime = 0;
-
-        /// <summary>
-        /// 现在显示的消息所在的位置
-        /// </summary>
-        public int ShownMsgPos { get; private set; } = 0;
-
-        public float printSpeed = 10;
+        public int ShownMsgPos { get; private set; }
 
         public Text TextBox { get; private set; }
         public Image DialogBackground { get; private set; }
 
         /// <summary>
-        /// 增加显示的消息
+        ///     增加显示的消息
         /// </summary>
         /// <param name="msg">要显示什么</param>
         /// <returns>增加的消息的位置</returns>
         public int AddMessage(string msg)
         {
-            int pos = ShownMsgPos + Message.Length;
+            var pos = ShownMsgPos + Message.Length;
             Message += msg + "\f";
 
             return pos;
@@ -51,12 +49,13 @@ namespace RPGTool.System
             TextBox = GetComponentInChildren<Text>();
             DialogBackground = GetComponent<Image>();
         }
-        void Start()
+
+        private void Start()
         {
             DialogBackground.enabled = false;
         }
 
-        void Update()
+        private void Update()
         {
             //暂停时处理暂停相关
             if (PrintingPaused)
@@ -74,6 +73,7 @@ namespace RPGTool.System
                         ++ShownMsgPos;
                     }
                 }
+
                 return;
             }
 
@@ -88,14 +88,14 @@ namespace RPGTool.System
                 DialogBackground.enabled = false;
                 return;
             }
-            else
-                DialogBackground.enabled = true;
+
+            DialogBackground.enabled = true;
 
 
             //如果是换页，移除换页符并暂停
             if (Message[0] == '\f')
             {
-                 PrintingPaused = true;
+                PrintingPaused = true;
                 return;
             }
 

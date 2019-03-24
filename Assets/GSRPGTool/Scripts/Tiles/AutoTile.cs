@@ -141,7 +141,8 @@ namespace RPGTool.Tiles
 
                 if (currentTileInfo.tileType == InfoTile.TileType.Ground ||
                     currentTileInfo.tileType == InfoTile.TileType.Void)
-                    GameMapManager.gameMapManager.infoTilemap.SetTileInfo(new Vector2Int(position.x, position.y), tileType,
+                    GameMapManager.gameMapManager.infoTilemap.SetTileInfo(new Vector2Int(position.x, position.y),
+                        tileType,
                         currentTileInfo.hasActor);
             }
 

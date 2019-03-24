@@ -11,12 +11,12 @@ namespace RPGTool.Save
 {
     public class SaveManager : MonoBehaviour
     {
+        private static SaveManager _saveManager;
+        public int CurrentSceneId;
         public static string SaveName { get; private set; }
 
         public static string SaveDir => Application.persistentDataPath + "/" + SaveName;
         public static string SavePath => SaveDir + "/scene" + SceneManager.GetActiveScene().buildIndex + ".sav";
-
-        private static SaveManager _saveManager;
 
         public static SaveManager saveManager
         {
@@ -27,7 +27,6 @@ namespace RPGTool.Save
                 return _saveManager;
             }
         }
-        public int CurrentSceneId = 0;
 
         private void Awake()
         {
@@ -41,7 +40,7 @@ namespace RPGTool.Save
 
             DontDestroyOnLoad(this);
 
-            SceneManager.sceneLoaded += (Scene arg0, LoadSceneMode arg1) =>
+            SceneManager.sceneLoaded += (arg0, arg1) =>
             {
                 if (arg0.buildIndex != 0)
                     CurrentSceneId = arg0.buildIndex;

@@ -8,7 +8,7 @@ using UnityEngine;
 namespace RPGTool
 {
     [ExecuteInEditMode]
-    [RequireComponent(typeof(SpriteRenderer))]
+    [RequireComponent(typeof(SpriteRenderer), typeof(GridTransform))]
     public class Actor : SavableBehaviour
     {
         /// <summary>
@@ -48,6 +48,11 @@ namespace RPGTool
         public Texture2D actorTexture;
 
         /// <summary>
+        ///     是否可以穿过
+        /// </summary>
+        public bool canPass;
+
+        /// <summary>
         ///     接下来一格预期的角色移动方向
         /// </summary>
         public Face? expectNextMoveDirection;
@@ -56,6 +61,11 @@ namespace RPGTool
         ///     角色的面向
         /// </summary>
         public Face faceTo = Face.Down;
+
+        /// <summary>
+        ///     是否是运动学的(忽略一切物理碰撞)
+        /// </summary>
+        public bool isKinematic;
 
         /// <summary>
         ///     角色素材中心
@@ -83,6 +93,8 @@ namespace RPGTool
         {
             DataSaver.Save(GridTransform.position, stream);
             DataSaver.Save(faceTo, stream);
+            DataSaver.Save(isKinematic, stream);
+            DataSaver.Save(canPass, stream);
         }
 
         public override void OnLoad(BinaryReader stream)
@@ -91,6 +103,8 @@ namespace RPGTool
             GridTransform.ResetMovement();
             GridTransform.position = DataLoader.Load<Vector2Int>(stream);
             faceTo = DataLoader.Load<Face>(stream);
+            isKinematic = DataLoader.Load<bool>(stream);
+            canPass = DataLoader.Load<bool>(stream);
         }
 
         public static Vector2Int FaceToVector(Face face)
@@ -132,7 +146,6 @@ namespace RPGTool
             if (!Application.isPlaying)
                 return;
 #endif
-            AddJointPoint(GridTransform.position);
         }
 
         private Sprite GetSprite(int index)
@@ -152,7 +165,8 @@ namespace RPGTool
             {
 #endif
                 UpdateMovement();
-                UpdateCollider();
+                if (!canPass)
+                    UpdateCollider();
 #if UNITY_EDITOR
             }
 #endif
@@ -167,15 +181,16 @@ namespace RPGTool
             if (GridTransform.IsMoving || expectNextMoveDirection == null)
                 return;
 
-            faceTo = expectNextMoveDirection ?? faceTo;
+            faceTo = expectNextMoveDirection.Value;
             _currentMoveDirection = expectNextMoveDirection;
+
             var directionVector = FaceToVector(faceTo);
-            if (CanMoveIn(
-                GameMapManager.gameMapManager.infoTilemap.GetTileInfo(GridTransform.position + directionVector)))
-            {
-                GridTransform.Move(directionVector, 1 / speed);
-                expectNextMoveDirection = null;
-            }
+            if (!isKinematic &&
+                !CanMoveIn(
+                    GameMapManager.gameMapManager.infoTilemap.GetTileInfo(GridTransform.position + directionVector)))
+                return;
+            GridTransform.Move(directionVector, 1 / speed);
+            expectNextMoveDirection = null;
         }
 
         /// <summary>
@@ -282,16 +297,9 @@ namespace RPGTool
             {
                 UpdateJointPos(new List<Vector2Int> {GridTransform.position});
             }
-        }
 
-        /// <summary>
-        ///     增加碰撞相交点
-        /// </summary>
-        /// <param name="point"></param>
-        public void AddJointPoint(Vector2Int point)
-        {
-            JointPositions.Add(point);
-            GameMapManager.gameMapManager.infoTilemap.SetTileInfo(point, true);
+            //脚下始终不可通过
+            GameMapManager.gameMapManager.infoTilemap.SetTileInfo(GridTransform.position, true);
         }
 
         /// <summary>

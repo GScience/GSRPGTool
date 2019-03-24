@@ -5,24 +5,24 @@ using RPGTool.Save;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace RPGTool.GameScrpits
+namespace RPGTool.GameScripts
 {
     public abstract class GameScriptBase : SavableBehaviour
     {
         /// <summary>
+        ///     游戏脚本执行队列
+        /// </summary>
+        private readonly List<ScriptAction> _actionList = new List<ScriptAction>();
+
+        /// <summary>
         ///     是否正在运行
         /// </summary>
-        private bool _isRunning = false;
+        private bool _isRunning;
 
         /// <summary>
         ///     当前执行到的位置
         /// </summary>
         private uint _runPos;
-
-        /// <summary>
-        ///     游戏脚本执行队列
-        /// </summary>
-        private readonly List<ScriptAction> _actionList = new List<ScriptAction>();
 
         public override int GetHashCode()
         {
@@ -35,6 +35,7 @@ namespace RPGTool.GameScrpits
             hashCode *= _actionList.Count;
             return hashCode;
         }
+
         public override void OnSave(BinaryWriter stream)
         {
             DataSaver.Save(GetHashCode(), stream);
@@ -62,6 +63,7 @@ namespace RPGTool.GameScrpits
 
             if (isRunning)
                 RunScript();
+            _isRunning = isRunning;
         }
 
         /// <summary>
@@ -76,7 +78,7 @@ namespace RPGTool.GameScrpits
         {
             _actionList.Add(new ScriptAction("Check")
             {
-                OnStart = () => { doWhat(checkFunc()); }
+                onStart = () => { doWhat(checkFunc()); }
             });
             return _actionList.Count - 1;
         }
@@ -88,23 +90,90 @@ namespace RPGTool.GameScrpits
         /// <param name="actor">移动的角色</param>
         /// <param name="moveTo">移动的方向</param>
         /// <returns>当前事件Id</returns>
-        public int MoveActor(Actor actor, Actor.Face moveTo, float speed)
+        public int MoveActor(Actor actor, Actor.Face? moveTo)
         {
             var startPos = actor.GridTransform.position;
             _actionList.Add(new ScriptAction("MoveActor")
             {
-                OnStart = () =>
+                onStart = () =>
                 {
                     startPos = actor.GridTransform.position;
-                    actor.speed = speed;
                     actor.expectNextMoveDirection = moveTo;
                 },
-                OnUpdate = () =>
+                onUpdate = () =>
                 {
+                    if (moveTo == null)
+                        return true;
+
                     var offset = actor.GridTransform.position - startPos;
 
-                    return offset == Actor.FaceToVector(moveTo);
+                    return offset == Actor.FaceToVector(moveTo.Value);
                 }
+            });
+            return _actionList.Count - 1;
+        }
+
+        /// <summary>
+        ///     设置角色信息
+        /// </summary>
+        /// <param name="actor">角色</param>
+        /// <param name="isKinematic">是否仅运动学</param>
+        /// <param name="speed">速度</param>
+        /// <returns>当前事件Id</returns>
+        public int SetActor(Actor actor, bool isKinematic, float speed = -1)
+        {
+            _actionList.Add(new ScriptAction("MoveActor")
+            {
+                onStart = () =>
+                {
+                    actor.isKinematic = isKinematic;
+                    if (speed > 0)
+                        actor.speed = speed;
+                }
+            });
+            return _actionList.Count - 1;
+        }
+
+        /// <summary>
+        ///     改变面向方向
+        /// </summary>
+        /// <param name="actor">角色</param>
+        /// <param name="face">面向</param>
+        /// <returns>当前事件Id</returns>
+        public int ChangeFace(Actor actor, Actor.Face face)
+        {
+            _actionList.Add(new ScriptAction("ChangeFace")
+            {
+                onStart = () => { actor.faceTo = face; }
+            });
+            return _actionList.Count - 1;
+        }
+
+        /// <summary>
+        ///     屏蔽交互事件
+        /// </summary>
+        /// <param name="block">是否屏蔽</param>
+        /// <returns>当前事件Id</returns>
+        public int BlockInteraction(bool block)
+        {
+            _actionList.Add(new ScriptAction("ChangeFace")
+            {
+                onStart = () => { GameMapManager.gameMapManager.IgnorePlayerInteract = block; }
+            });
+            return _actionList.Count - 1;
+        }
+
+        /// <summary>
+        ///     等待指定时间
+        /// </summary>
+        /// <param name="time">等待的时间（单位为秒）</param>
+        /// <returns>当前事件Id</returns>
+        public int Wait(float time)
+        {
+            _actionList.Add(new ScriptAction("Wait")
+            {
+                onStart = () => { },
+                onUpdate = () => (time -= Time.deltaTime) < 0
             });
             return _actionList.Count - 1;
         }
@@ -119,17 +188,17 @@ namespace RPGTool.GameScrpits
         {
             _actionList.Add(new ScriptAction("JumpTo")
             {
-                OnStart = () =>
+                onStart = () =>
                 {
                     _runPos = where;
-                    _actionList[(int) _runPos].OnStart();
+                    _actionList[(int) _runPos].onStart();
                 }
             });
             return _actionList.Count - 1;
         }
 
         /// <summary>
-        /// 显示消息
+        ///     显示消息
         ///     <para>支持阻塞与非阻塞</para>
         /// </summary>
         /// <param name="msg">向显示的东西</param>
@@ -137,17 +206,11 @@ namespace RPGTool.GameScrpits
         /// <returns>当前事件Id</returns>
         public int AddMessage(string msg, bool block)
         {
-            int pos = 0;
+            var pos = 0;
             _actionList.Add(new ScriptAction("AddMessage")
             {
-                OnStart = () =>
-                {
-                    pos = GameMapManager.gameMapManager.mainDialog.AddMessage(msg);
-                },
-                OnUpdate = ()=>
-                {
-                    return !block || pos + msg.Length < GameMapManager.gameMapManager.mainDialog.ShownMsgPos;
-                }
+                onStart = () => { pos = GameMapManager.gameMapManager.mainDialog.AddMessage(msg); },
+                onUpdate = () => !block || pos + msg.Length < GameMapManager.gameMapManager.mainDialog.ShownMsgPos
             });
             return _actionList.Count - 1;
         }
@@ -157,27 +220,41 @@ namespace RPGTool.GameScrpits
         ///     <para>只支持以阻塞形式调用</para>
         /// </summary>
         /// <param name="sceneName">场景名，为null或者为空则代表不改变场景</param>
-        /// /// <param name="pos">新的位置</param>
+        /// ///
+        /// <param name="pos">新的位置</param>
         /// <returns>当前事件Id</returns>
         public int SetPlayerPos(string sceneName, Vector2Int pos)
         {
             _actionList.Add(new ScriptAction("SetPlayerPos")
             {
-                OnStart = () =>
+                onStart = () =>
                 {
                     if (!string.IsNullOrEmpty(sceneName))
                     {
-                        ++_runPos;
 #if UNITY_EDITOR
                         if (SaveManager.saveManager)
 #endif
                             SaveManager.saveManager.SaveCurrentScene();
-                        SceneManager.LoadScene(sceneName);
                     }
-                    SceneManager.sceneLoaded += (Scene arg0, LoadSceneMode arg1)=>
+
+                    SceneManager.sceneLoaded += (arg0, arg1) =>
                     {
+                        GameMapManager.gameMapManager.fader.FadeIn();
                         GameMapManager.gameMapManager.player.GridTransform.position = pos;
                     };
+
+                    GameMapManager.gameMapManager.fader.FadeOut();
+                },
+                onUpdate = () =>
+                {
+                    if (GameMapManager.gameMapManager.fader.IsFinished)
+                    {
+                        //移动到下一个
+                        ++_runPos;
+                        SceneManager.LoadScene(sceneName);
+                    }
+
+                    return false;
                 }
             });
             return _actionList.Count - 1;
@@ -185,12 +262,18 @@ namespace RPGTool.GameScrpits
 
         private void Update()
         {
-            if (_runPos >= _actionList.Count)
+            if (_runPos >= _actionList.Count || !_isRunning)
+            {
+                _isRunning = false;
+                _actionList.Clear();
+                _runPos = 0;
                 return;
+            }
+
             var currentAction = _actionList[(int) _runPos];
-            if (currentAction.OnUpdate == null || currentAction.OnUpdate())
+            if (currentAction.onUpdate == null || currentAction.onUpdate())
                 if (++_runPos < _actionList.Count)
-                    _actionList[(int) _runPos].OnStart();
+                    _actionList[(int) _runPos].onStart();
         }
 
         /// <summary>
@@ -202,7 +285,7 @@ namespace RPGTool.GameScrpits
                 return;
 
             Init();
-            _actionList[(int) _runPos].OnStart();
+            _actionList[(int) _runPos].onStart();
             _isRunning = true;
         }
 
@@ -217,18 +300,18 @@ namespace RPGTool.GameScrpits
 
             public delegate bool UpdateDelegate();
 
+            public readonly string name;
+
             /// <summary>
             ///     在开始时调用
             /// </summary>
-            public StartDelegate OnStart;
+            public StartDelegate onStart;
 
             /// <summary>
             ///     在刷新时调用
             ///     如果返回true则代表刷新结束
             /// </summary>
-            public UpdateDelegate OnUpdate;
-
-            public readonly string name;
+            public UpdateDelegate onUpdate;
 
             public ScriptAction(string actionName)
             {

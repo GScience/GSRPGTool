@@ -32,6 +32,11 @@ namespace RPGTool
         [Tooltip("角色网格坐标")] public Vector2Int position;
 
         /// <summary>
+        ///     叠加顺序
+        /// </summary>
+        public int zOrder = 0;
+
+        /// <summary>
         ///     移动协程
         /// </summary>
         public Coroutine MovingCoroutine { get; private set; }
@@ -78,7 +83,7 @@ namespace RPGTool
 
             //设置深度
             if (SpriteRenderer != null)
-                SpriteRenderer.sortingOrder = -position.y;
+                SpriteRenderer.sortingOrder = -position.y * 2 + zOrder;
         }
 
         /// <summary>

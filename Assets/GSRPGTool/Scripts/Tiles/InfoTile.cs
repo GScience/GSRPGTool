@@ -51,7 +51,7 @@ namespace RPGTool.Tiles
         public static InfoTile GetInfoTile(TileType tileType, bool hasActor)
         {
             if (InfoTiles[0] == null)
-                InitInfoTile();  
+                InitInfoTile();
             return InfoTiles[(int) tileType + (hasActor ? (int) TileType.Count : 0)];
         }
 
