@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using RPGTool.GameScripts.Triggers;
 using RPGTool.Save;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -30,7 +31,11 @@ namespace RPGTool.GameScripts
 
             var hashCode = 0;
             foreach (var action in _actionList)
-                hashCode += action.name.GetHashCode();
+            {
+                if (action != null)
+                    hashCode += action.name.GetHashCode();
+                hashCode += 1;
+            }
 
             hashCode *= _actionList.Count;
             return hashCode;
@@ -58,6 +63,7 @@ namespace RPGTool.GameScripts
             if (hashCode != GetHashCode())
             {
                 _runPos = 0;
+                isRunning = false;
                 Debug.LogWarning("The sprite has been changed while running it. Reset pos to begin. ");
             }
 
@@ -78,7 +84,64 @@ namespace RPGTool.GameScripts
         {
             _actionList.Add(new ScriptAction("Check")
             {
-                onStart = () => { doWhat(checkFunc()); }
+                onStart = () =>
+                {
+                    //记录当前状态
+                    var nowPos = _runPos;
+                    var additionStartPos = _actionList.Count + 1;
+
+                    //加入终止
+                    _actionList.Add(null);
+
+                    //在结尾加入新的需要执行的内容
+                    doWhat(checkFunc());
+
+                    //跳转到结尾
+                    _runPos = (uint) additionStartPos;
+
+                    //在结尾插入往回的跳转
+                    JumpTo(nowPos + 1);
+
+                    //开始运行
+                    _actionList[(int) _runPos].onStart();
+                }
+            });
+            return _actionList.Count - 1;
+        }
+
+        /// <summary>
+        ///     面向玩家
+        /// </summary>
+        /// <typeparam name="T">自动推断判断的类型</typeparam>
+        /// <param name="checkFunc">获取判断值</param>
+        /// <param name="doWhat">执行什么判断</param>
+        /// <returns>当前事件Id</returns>
+        public int FaceToPlayer()
+        {
+            var actor = GetComponent<Actor>();
+
+            _actionList.Add(new ScriptAction("FaceToPlayer")
+            {
+                onStart = () =>
+                {
+                    switch (GameMapManager.gameMapManager.player.faceTo)
+                    {
+                        case Actor.Face.Up:
+                            actor.faceTo = Actor.Face.Down;
+                            break;
+                        case Actor.Face.Down:
+                            actor.faceTo = Actor.Face.Up;
+                            break;
+                        case Actor.Face.Left:
+                            actor.faceTo = Actor.Face.Right;
+                            break;
+                        case Actor.Face.Right:
+                            actor.faceTo = Actor.Face.Left;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
             });
             return _actionList.Count - 1;
         }
@@ -150,6 +213,21 @@ namespace RPGTool.GameScripts
         }
 
         /// <summary>
+        ///     设置触发是否可用
+        /// </summary>
+        /// <param name="trigger">触发器</param>
+        /// <param name="enable">是否可用</param>
+        /// <returns>当前事件Id</returns>
+        public int SetTriggerEnable(TriggerBase trigger, bool enable)
+        {
+            _actionList.Add(new ScriptAction("ChangeFace")
+            {
+                onStart = () => { trigger.enabled = enable; }
+            });
+            return _actionList.Count - 1;
+        }
+
+        /// <summary>
         ///     屏蔽交互事件
         /// </summary>
         /// <param name="block">是否屏蔽</param>
@@ -179,6 +257,27 @@ namespace RPGTool.GameScripts
         }
 
         /// <summary>
+        ///     设置数据库变量
+        /// </summary>
+        /// <param name="key">键值</param>
+        /// <param name="value">值</param>
+        /// <returns>当前事件Id</returns>
+        public int SetDatabaseValue(string key, int? value)
+        {
+            _actionList.Add(new ScriptAction("Wait")
+            {
+                onStart = () =>
+                {
+                    if (value == null)
+                        SaveManager.database.Remove(key);
+                    else
+                        SaveManager.database[key] = value.Value;
+                }
+            });
+            return _actionList.Count - 1;
+        }
+
+        /// <summary>
         ///     跳转到指定位置
         ///     <para>只支持以阻塞形式调用</para>
         /// </summary>
@@ -191,7 +290,8 @@ namespace RPGTool.GameScripts
                 onStart = () =>
                 {
                     _runPos = where;
-                    _actionList[(int) _runPos].onStart();
+                    if (_actionList[(int)_runPos] != null)
+                        _actionList[(int) _runPos].onStart();
                 }
             });
             return _actionList.Count - 1;
@@ -204,7 +304,7 @@ namespace RPGTool.GameScripts
         /// <param name="msg">向显示的东西</param>
         /// <param name="block">是否阻挡事件的执行</param>
         /// <returns>当前事件Id</returns>
-        public int AddMessage(string msg, bool block)
+        public int AddMessage(string msg, bool block = true)
         {
             var pos = 0;
             _actionList.Add(new ScriptAction("AddMessage")
@@ -264,7 +364,7 @@ namespace RPGTool.GameScripts
 
         private void Update()
         {
-            if (_runPos >= _actionList.Count || !_isRunning)
+            if (_runPos >= _actionList.Count || !_isRunning || _actionList[(int) _runPos] == null)
             {
                 _isRunning = false;
                 _actionList.Clear();
@@ -274,7 +374,7 @@ namespace RPGTool.GameScripts
 
             var currentAction = _actionList[(int) _runPos];
             if (currentAction.onUpdate == null || currentAction.onUpdate())
-                if (++_runPos < _actionList.Count)
+                if (++_runPos < _actionList.Count && _actionList[(int)_runPos] != null)
                     _actionList[(int) _runPos].onStart();
         }
 

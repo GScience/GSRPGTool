@@ -11,6 +11,11 @@ namespace RPGTool.GameScripts.Triggers
 
         [Tooltip("是否只触发一次")] public bool onlyOnce = true;
 
+        void Awake()
+        {
+            if (gameScript == null)
+                Debug.LogError("没有为角色" + name + "的事件绑定任何脚本");
+        }
         private void LateUpdate()
         {
             if (Check())

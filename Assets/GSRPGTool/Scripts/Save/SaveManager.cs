@@ -18,6 +18,8 @@ namespace RPGTool.Save
         public static string SaveDir => Application.persistentDataPath + "/" + SaveName;
         public static string SavePath => SaveDir + "/scene" + SceneManager.GetActiveScene().buildIndex + ".sav";
 
+        public static Dictionary<string, int> database = new Dictionary<string, int>();
+
         public static SaveManager saveManager
         {
             get
@@ -123,6 +125,16 @@ namespace RPGTool.Save
             var file = File.OpenWrite(SaveDir + "/save.sav");
             var writer = new BinaryWriter(file);
             DataSaver.Save(CurrentSceneId, writer);
+
+            //保存数据库
+            foreach (var data in database)
+            {
+                DataSaver.Save(true, writer);
+                DataSaver.Save(data.Key, writer);
+                DataSaver.Save(data.Value, writer);
+            }
+            DataSaver.Save(false, writer);
+
             writer.Close();
             file.Close();
         }
@@ -136,6 +148,16 @@ namespace RPGTool.Save
                 var file = File.OpenRead(SaveDir + "/save.sav");
                 var reader = new BinaryReader(file);
                 CurrentSceneId = DataLoader.Load<int>(reader);
+
+                //读取数据库
+                database = new Dictionary<string, int>();
+                while (DataLoader.Load<bool>(reader))
+                {
+                    var key = DataLoader.Load<string>(reader);
+                    var value = DataLoader.Load<int>(reader);
+                    database.Add(key, value);
+                }
+
                 reader.Close();
                 file.Close();
             }

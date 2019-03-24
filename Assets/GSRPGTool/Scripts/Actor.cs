@@ -126,18 +126,22 @@ namespace RPGTool
 
         private void Awake()
         {
+            GridTransform = GetComponent<GridTransform>();
+            SpriteRenderer = GetComponent<SpriteRenderer>();
+
 #if UNITY_EDITOR
             if (!Application.isPlaying)
                 return;
 #endif
+            if (actorTexture == null)
+                return;
+
             //分割图像
             for (var i = 0; i < 12; ++i)
                 _actorSprites[i] = GetSprite(i);
 
             //设置纹理显示模式
             actorTexture.filterMode = FilterMode.Point;
-            GridTransform = GetComponent<GridTransform>();
-            SpriteRenderer = GetComponent<SpriteRenderer>();
         }
 
         private void Start()
@@ -170,7 +174,8 @@ namespace RPGTool
 #if UNITY_EDITOR
             }
 #endif
-            UpdateAnima();
+            if (actorTexture != null)
+                UpdateAnima();
         }
 
         /// <summary>
