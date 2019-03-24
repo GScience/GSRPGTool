@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using RPGTool.GameScripts.Triggers;
+using UnityEngine;
 
 namespace RPGTool.GameScripts
 {
@@ -22,7 +23,7 @@ namespace RPGTool.GameScripts
             _doorActor = GetComponent<Actor>();
         }
 
-        public override void Do()
+        public override void Do(TriggerBase trigger)
         {
             BlockInteraction(true);
             MoveActor(GameMapManager.gameMapManager.player, null);

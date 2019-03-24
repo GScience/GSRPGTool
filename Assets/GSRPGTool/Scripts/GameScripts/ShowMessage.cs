@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RPGTool.GameScripts;
+using RPGTool.GameScripts.Triggers;
 using UnityEngine;
 
 namespace RPGTool.GameScripts
@@ -17,7 +18,7 @@ namespace RPGTool.GameScripts
         [Tooltip("完成对话是否自动转回来")]
         public bool autoTurnBack = true;
 
-        public override void Do()
+        public override void Do(TriggerBase trigger)
         {
             AddShowMessageScripts(this, message, autoTurnToPlayer, autoTurnBack);
         }

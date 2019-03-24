@@ -27,7 +27,8 @@ namespace RPGTool.GameScripts
 
         public override int GetHashCode()
         {
-            Init();
+            if (_actionList.Count == 0)
+                Do(null);
 
             var hashCode = 0;
             foreach (var action in _actionList)
@@ -46,12 +47,6 @@ namespace RPGTool.GameScripts
             DataSaver.Save(GetHashCode(), stream);
             DataSaver.Save(_runPos, stream);
             DataSaver.Save(_isRunning, stream);
-        }
-
-        private void Init()
-        {
-            if (_actionList.Count == 0)
-                Do();
         }
 
         public override void OnLoad(BinaryReader stream)
@@ -222,7 +217,11 @@ namespace RPGTool.GameScripts
         {
             _actionList.Add(new ScriptAction("ChangeFace")
             {
-                onStart = () => { trigger.enabled = enable; }
+                onStart = () =>
+                {
+                    if (trigger != null)
+                        trigger.enabled = enable;
+                }
             });
             return _actionList.Count - 1;
         }
@@ -236,7 +235,11 @@ namespace RPGTool.GameScripts
         {
             _actionList.Add(new ScriptAction("BlockInteraction")
             {
-                onStart = () => { GameMapManager.gameMapManager.IgnorePlayerInteract = block; }
+                onStart = () =>
+                {
+                    GameMapManager.gameMapManager.IgnorePlayerInteract = block;
+                    GameMapManager.gameMapManager.player.expectNextMoveDirection = null;
+                }
             });
             return _actionList.Count - 1;
         }
@@ -271,7 +274,7 @@ namespace RPGTool.GameScripts
                     if (value == null)
                         SaveManager.database.Remove(key);
                     else
-                        SaveManager.database[key] = value.Value;
+                    SaveManager.database[key] = value.Value;
                 }
             });
             return _actionList.Count - 1;
@@ -381,17 +384,17 @@ namespace RPGTool.GameScripts
         /// <summary>
         ///     开始运行脚本
         /// </summary>
-        public void RunScript()
+        public void RunScript(TriggerBase trigger = null)
         {
             if (_isRunning)
                 return;
 
-            Init();
+            Do(trigger);
             _actionList[(int) _runPos].onStart();
             _isRunning = true;
         }
 
-        public abstract void Do();
+        public abstract void Do(TriggerBase trigger);
 
         /// <summary>
         ///     脚本Action

@@ -20,7 +20,7 @@ namespace RPGTool.GameScripts.Triggers
         {
             if (Check())
             {
-                gameScript.RunScript();
+                gameScript.RunScript(this);
                 enabled = !onlyOnce;
             }
         }

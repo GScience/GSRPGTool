@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RPGTool.GameScripts;
+using RPGTool.GameScripts.Triggers;
 using RPGTool.Save;
 
-namespace Assets.GSRPGTool.Scripts.GameScripts
+namespace RPGTool.GameScripts
 {
     public class PickupItem : GameScriptBase
     {
@@ -14,7 +15,7 @@ namespace Assets.GSRPGTool.Scripts.GameScripts
         public static string keyFormat = "PickupItem.OwnItem.{0}";
         public string itemName = "";
 
-        public override void Do()
+        public override void Do(TriggerBase trigger)
         {
             AddPickupItemScripts(this, itemName);
         }
