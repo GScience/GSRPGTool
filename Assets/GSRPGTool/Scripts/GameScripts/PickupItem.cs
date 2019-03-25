@@ -27,13 +27,13 @@ namespace RPGTool.GameScripts
             return pos;
         }
 
-        public static int AddItemCheckScripts(GameScriptBase script, string itemName, Action<int> action)
+        public static int AddHasItemCheckScripts(GameScriptBase script, string itemName, Action hasItem, Action dontHasItem)
         {
-            return script.Check(() =>
+            return script.If(() =>
             {
                 var key = string.Format(keyFormat, itemName);
-                return !SaveManager.database.TryGetValue(key, out var value) ? 0 : value;
-            }, action);
+                return SaveManager.database.TryGetValue(key, out var value) && value > 0;
+            }, hasItem, dontHasItem);
         }
     }
 }

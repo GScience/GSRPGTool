@@ -26,20 +26,24 @@ namespace RPGTool.GameScripts
         public static int AddShowMessageScripts(GameScriptBase script, string message, 
             bool autoTurnBack = true, bool autoTurnToPlayer = true)
         {
-            Actor.Face actorFaceTo;
             var actor = script.gameObject.GetComponent<Actor>();
 
             if (actor)
-                return script.Check(() => actor.faceTo, faceTo =>
-                {
-                    actorFaceTo = faceTo;
-                    if (autoTurnToPlayer)
-                        script.FaceToPlayer();
+            {
+                var actorFaceTo = actor.faceTo;
+                var id = -1;
 
-                    script.AddMessage(message);
-                    if (autoTurnBack)
-                        script.ChangeFace(actor, actorFaceTo);
-                });
+                if (autoTurnToPlayer)
+                    id = script.FaceToPlayer();
+                var id2 = script.AddMessage(message);
+                if (id == -1)
+                    id = id2;
+                if (autoTurnBack)
+                    script.ChangeFace(actor, actorFaceTo);
+
+                return id;
+            }
+
             return script.AddMessage(message);
         }
     }

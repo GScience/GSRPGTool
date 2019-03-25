@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using RPGTool.GameScripts.Triggers;
 using RPGTool.Save;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -68,39 +69,62 @@ namespace RPGTool.GameScripts
         }
 
         /// <summary>
-        ///     判断分支执行
+        ///     条件判断
         ///     <para>只支持以阻塞形式调用</para>
         /// </summary>
-        /// <typeparam name="T">自动推断判断的类型</typeparam>
-        /// <param name="checkFunc">获取判断值</param>
-        /// <param name="doWhat">执行什么判断</param>
+        /// <param name="check">执行什么判断</param>
+        /// <param name="isTrue">真</param>
+        /// <param name="isFalse">假</param>
         /// <returns>当前事件Id</returns>
-        public int Check<T>(Func<T> checkFunc, Action<T> doWhat)
+        public int If(Func<bool> check, Action isTrue, Action isFalse)
         {
-            _actionList.Add(new ScriptAction("Check")
+            //判断占位
+            var checkPos = (uint) _actionList.Count;
+            _actionList.Add(null);
+
+            //真
+            var trueBeginPos = (uint)_actionList.Count;
+            isTrue();
+            var trueEndPos = (uint)_actionList.Count;
+            _actionList.Add(null);
+
+            //假
+            var falseBeginPos = (uint)_actionList.Count;
+            isFalse();
+            var falseEndPos = (uint)_actionList.Count;
+            _actionList.Add(null);
+
+            var outPos = (uint)_actionList.Count;
+
+            //真跳出
+            _actionList[(int)trueEndPos] = new ScriptAction("IfTrueEnd")
             {
                 onStart = () =>
                 {
-                    //记录当前状态
-                    var nowPos = _runPos;
-                    var additionStartPos = _actionList.Count + 1;
-
-                    //加入终止
-                    _actionList.Add(null);
-
-                    //在结尾加入新的需要执行的内容
-                    doWhat(checkFunc());
-
-                    //跳转到结尾
-                    _runPos = (uint) additionStartPos;
-
-                    //在结尾插入往回的跳转
-                    JumpTo(nowPos + 1);
-
-                    //开始运行
-                    _actionList[(int) _runPos].onStart();
+                    _runPos = outPos;
+                    _actionList[(int)_runPos].onStart();
                 }
-            });
+            };
+
+            //假跳出
+            _actionList[(int)falseEndPos] = new ScriptAction("IfFalseEnd")
+            {
+                onStart = () =>
+                {
+                    _runPos = outPos;
+                    _actionList[(int)_runPos].onStart();
+                }
+            };
+
+            _actionList[(int) checkPos] = new ScriptAction("If")
+            {
+                onStart = () =>
+                {
+                    _runPos = check() ? trueBeginPos : falseBeginPos;
+                    _actionList[(int)_runPos].onStart();
+                }
+            };
+
             return _actionList.Count - 1;
         }
 
@@ -389,6 +413,7 @@ namespace RPGTool.GameScripts
             if (_isRunning)
                 return;
 
+            _actionList.Clear();
             Do(trigger);
             _actionList[(int) _runPos].onStart();
             _isRunning = true;
