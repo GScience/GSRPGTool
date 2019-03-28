@@ -50,12 +50,6 @@ namespace RPGTool.Save
             };
         }
 
-        public void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.O))
-                SaveCurrentScene();
-        }
-
         public void SaveCurrentScene()
         {
             Debug.Log("Save to " + SavePath);

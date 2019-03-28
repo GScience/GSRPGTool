@@ -12,7 +12,7 @@ namespace RPGTool.GameScripts.Triggers
     {
         protected override bool Check()
         {
-            if (!Input.GetKeyDown(KeyCode.Space))
+            if (!GameMapManager.GetInput(PlayerInput.Interaction))
                 return false;
 
             var player = GameMapManager.gameMapManager.player;

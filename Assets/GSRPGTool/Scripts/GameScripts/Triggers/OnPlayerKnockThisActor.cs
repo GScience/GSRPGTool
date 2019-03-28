@@ -16,13 +16,13 @@ namespace RPGTool.GameScripts.Triggers
             switch (knockTo)
             {
                 case Actor.Face.Up:
-                    return Input.GetKey(KeyCode.W);
+                    return GameMapManager.GetInput(PlayerInput.Up);
                 case Actor.Face.Down:
-                    return Input.GetKey(KeyCode.S);
+                    return GameMapManager.GetInput(PlayerInput.Down);
                 case Actor.Face.Left:
-                    return Input.GetKey(KeyCode.A);
+                    return GameMapManager.GetInput(PlayerInput.Left);
                 case Actor.Face.Right:
-                    return Input.GetKey(KeyCode.D);
+                    return GameMapManager.GetInput(PlayerInput.Right);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
