@@ -185,7 +185,7 @@ namespace RPGTool.GameScripts
         /// <returns>当前事件Id</returns>
         public int SetTriggerEnable(TriggerBase trigger, bool enable)
         {
-            _actionList.Add(new ScriptAction("ChangeFace")
+            _actionList.Add(new ScriptAction("SetTriggerEnable")
             {
                 onStart = () =>
                 {
@@ -237,7 +237,7 @@ namespace RPGTool.GameScripts
         /// <returns>当前事件Id</returns>
         public int SetDatabaseValue(string key, int? value)
         {
-            _actionList.Add(new ScriptAction("Wait")
+            _actionList.Add(new ScriptAction("SetDatabaseValue")
             {
                 onStart = () =>
                 {
@@ -245,6 +245,28 @@ namespace RPGTool.GameScripts
                         SaveManager.database.Remove(key);
                     else
                         SaveManager.database[key] = value.Value;
+                }
+            });
+            return _actionList.Count - 1;
+        }
+
+        /// <summary>
+        ///     设置数据库变量
+        /// </summary>
+        /// <param name="key">键值</param>
+        /// <param name="valueExpression">值表达式（在执行到的时候进行运算）</param>
+        /// <returns>当前事件Id</returns>
+        public int SetDatabaseValue(string key, Func<int?> valueExpression)
+        {
+            _actionList.Add(new ScriptAction("SetDatabaseValue")
+            {
+                onStart = () =>
+                {
+                    var result = valueExpression();
+                    if (result == null)
+                        SaveManager.database.Remove(key);
+                    else
+                        SaveManager.database[key] = result.Value;
                 }
             });
             return _actionList.Count - 1;
