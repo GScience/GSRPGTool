@@ -26,6 +26,11 @@ namespace RPGTool.GameScripts
         /// </summary>
         private uint _runPos;
 
+        /// <summary>
+        /// 是否在脚本执行的时候屏蔽玩家的交互
+        /// </summary>
+        public bool blockPlayerInteraction = true;
+
         public override int GetHashCode()
         {
             if (_actionList.Count == 0)
@@ -41,6 +46,15 @@ namespace RPGTool.GameScripts
 
             hashCode *= _actionList.Count;
             return hashCode;
+        }
+
+        public void SetPos(uint pos)
+        {
+            _runPos = pos;
+            if (_runPos < _actionList.Count && _actionList[(int)_runPos] != null)
+                _actionList[(int) _runPos].onStart();
+            else
+                _isRunning = false;
         }
 
         public override void OnSave(BinaryWriter stream)
@@ -93,8 +107,11 @@ namespace RPGTool.GameScripts
                 return;
 
             _actionList.Clear();
+            BlockInteraction(blockPlayerInteraction);
             Do(trigger);
+            BlockInteraction(false);
             _actionList[(int) _runPos].onStart();
+
             _isRunning = true;
         }
 

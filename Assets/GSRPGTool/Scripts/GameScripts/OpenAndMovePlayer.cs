@@ -20,35 +20,34 @@ namespace RPGTool.GameScripts
 
         private void Awake()
         {
+            blockPlayerInteraction = true;
             _doorActor = GetComponent<Actor>();
         }
 
         public override void Do(TriggerBase trigger)
         {
-            BlockInteraction(true);
             MoveActor(GameMapManager.gameMapManager.player, null);
-            ChangeFace(GameMapManager.gameMapManager.player, Actor.Face.Up);
-            ChangeFace(_doorActor, Actor.Face.Down);
+            ChangeFaceTo(GameMapManager.gameMapManager.player, Actor.Face.Up);
+            ChangeFaceTo(_doorActor, Actor.Face.Down);
             Wait(0.1f);
-            ChangeFace(_doorActor, Actor.Face.Left);
+            ChangeFaceTo(_doorActor, Actor.Face.Left);
             Wait(0.1f);
-            ChangeFace(_doorActor, Actor.Face.Right);
+            ChangeFaceTo(_doorActor, Actor.Face.Right);
             Wait(0.1f);
-            ChangeFace(_doorActor, Actor.Face.Up);
+            ChangeFaceTo(_doorActor, Actor.Face.Up);
             Wait(0.1f);
             SetActor(GameMapManager.gameMapManager.player, true);
             MoveActor(GameMapManager.gameMapManager.player, Actor.Face.Up);
             SetActor(GameMapManager.gameMapManager.player, false);
-            ChangeFace(_doorActor, Actor.Face.Up);
+            ChangeFaceTo(_doorActor, Actor.Face.Up);
             Wait(0.1f);
-            ChangeFace(_doorActor, Actor.Face.Right);
+            ChangeFaceTo(_doorActor, Actor.Face.Right);
             Wait(0.1f);
-            ChangeFace(_doorActor, Actor.Face.Left);
+            ChangeFaceTo(_doorActor, Actor.Face.Left);
             Wait(0.1f);
-            ChangeFace(_doorActor, Actor.Face.Down);
+            ChangeFaceTo(_doorActor, Actor.Face.Down);
             Wait(0.1f);
             SetPlayerPos(moveToScene, pos, Actor.Face.Down);
-            BlockInteraction(false);
         }
     }
 }

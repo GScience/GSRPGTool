@@ -13,7 +13,7 @@ public class Doordisk : Subwindow
         base.Update();
         if (Mathf.Abs(disk1.transform.rotation.z) <= 0.1f && Mathf.Abs(disk2.transform.rotation.z) <= 0.1f)
         {
-            result = true;
+            Result = true;
             Close();
         }
     }

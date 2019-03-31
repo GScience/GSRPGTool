@@ -20,31 +20,13 @@ namespace RPGTool.GameScripts
 
         public override void Do(TriggerBase trigger)
         {
-            AddShowMessageScripts(this, message, autoTurnToPlayer, autoTurnBack);
-        }
-
-        public static int AddShowMessageScripts(GameScriptBase script, string message, 
-            bool autoTurnBack = true, bool autoTurnToPlayer = true)
-        {
-            var actor = script.gameObject.GetComponent<Actor>();
-
-            if (actor)
-            {
-                var actorFaceTo = actor.faceTo;
-                var id = -1;
-
-                if (autoTurnToPlayer)
-                    id = script.FaceToPlayer();
-                var id2 = script.AddMessage(message);
-                if (id == -1)
-                    id = id2;
-                if (autoTurnBack)
-                    script.ChangeFace(actor, actorFaceTo);
-
-                return id;
-            }
-
-            return script.AddMessage(message);
+            var actor = gameObject.GetComponent<Actor>();
+            var actorFaceTo = actor.faceTo;
+            if (autoTurnToPlayer)
+                FaceToPlayer();
+            AddMessage(message);
+            if (autoTurnBack)
+                ChangeFaceTo(actor, actorFaceTo);
         }
     }
 }

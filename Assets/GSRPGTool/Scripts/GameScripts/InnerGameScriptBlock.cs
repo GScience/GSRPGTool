@@ -13,6 +13,36 @@ namespace RPGTool.GameScripts
 {
     public abstract partial class GameScriptBase
     {
+        public int While(Func<bool> check, Action doWhat)
+        {
+            var pos = _actionList.Count;
+            var whileStart = (uint)_actionList.Count;
+
+            //插入判断头
+            _actionList.Add(null);
+            var bodyStartPos = (uint)_actionList.Count;
+            //插入执行体
+            doWhat();
+            //执行体结尾
+            _actionList.Add(new ScriptAction("WhileEnd")
+            {
+                onStart = () => SetPos(whileStart)
+            });
+            //整个while块结束
+            var whileEndPos = (uint)_actionList.Count;
+
+            //while头
+            _actionList[pos] = new ScriptAction("While")
+            {
+                onStart = () =>
+                {
+                    if (!check())
+                        SetPos(whileEndPos);
+                }
+            };
+            return pos;
+        }
+
         /// <summary>
         ///     条件判断
         ///     <para>只支持以阻塞形式调用</para>
@@ -21,7 +51,7 @@ namespace RPGTool.GameScripts
         /// <param name="isTrue">真</param>
         /// <param name="isFalse">假</param>
         /// <returns>当前事件Id</returns>
-        public int If(Func<bool> check, Action isTrue, Action isFalse)
+        public int If(Func<bool> check, Action isTrue, Action isFalse = null)
         {
             //判断占位
             var pos = _actionList.Count;
@@ -36,7 +66,7 @@ namespace RPGTool.GameScripts
 
             //假
             var falseBeginPos = (uint)_actionList.Count;
-            isFalse();
+            isFalse?.Invoke();
             var falseEndPos = (uint)_actionList.Count;
             _actionList.Add(null);
 
@@ -45,30 +75,19 @@ namespace RPGTool.GameScripts
             //真跳出
             _actionList[(int)trueEndPos] = new ScriptAction("IfTrueEnd")
             {
-                onStart = () =>
-                {
-                    _runPos = outPos;
-                    _actionList[(int)_runPos].onStart();
-                }
+                onStart = () => SetPos(outPos)
             };
 
             //假跳出
             _actionList[(int)falseEndPos] = new ScriptAction("IfFalseEnd")
             {
-                onStart = () =>
-                {
-                    _runPos = outPos;
-                    _actionList[(int)_runPos].onStart();
-                }
+                onStart = () => SetPos(outPos)
             };
 
+            //最初if判断
             _actionList[(int)checkPos] = new ScriptAction("If")
             {
-                onStart = () =>
-                {
-                    _runPos = check() ? trueBeginPos : falseBeginPos;
-                    _actionList[(int)_runPos].onStart();
-                }
+                onStart = () => SetPos(check() ? trueBeginPos : falseBeginPos)
             };
 
             return pos;
@@ -142,6 +161,38 @@ namespace RPGTool.GameScripts
         }
 
         /// <summary>
+        ///     向指定方向移动角色一格
+        ///     <para>只支持以阻塞形式调用</para>
+        /// </summary>
+        /// <param name="actor">移动的角色</param>
+        /// <param name="moveToFunc">移动的方向</param>
+        /// <returns>当前事件Id</returns>
+        public int MoveActorByExpression(Actor actor, Func<Actor.Face?> moveToFunc)
+        {
+            Actor.Face? moveTo = null;
+            var startPos = actor.GridTransform.position;
+            _actionList.Add(new ScriptAction("MoveActor")
+            {
+                onStart = () =>
+                {
+                    moveTo = moveToFunc();
+                    startPos = actor.GridTransform.position;
+                    actor.expectNextMoveDirection = moveTo;
+                },
+                onUpdate = () =>
+                {
+                    if (moveTo == null)
+                        return true;
+
+                    var offset = actor.GridTransform.position - startPos;
+
+                    return offset == Actor.FaceToVector(moveTo.Value);
+                }
+            });
+            return _actionList.Count - 1;
+        }
+
+        /// <summary>
         ///     设置角色信息
         /// </summary>
         /// <param name="actor">角色</param>
@@ -168,11 +219,30 @@ namespace RPGTool.GameScripts
         /// <param name="actor">角色</param>
         /// <param name="face">面向</param>
         /// <returns>当前事件Id</returns>
-        public int ChangeFace(Actor actor, Actor.Face face)
+        public int ChangeFaceTo(Actor actor, Actor.Face face)
         {
-            _actionList.Add(new ScriptAction("ChangeFace")
+            _actionList.Add(new ScriptAction("ChangeFaceTo")
             {
                 onStart = () => { actor.faceTo = face; }
+            });
+            return _actionList.Count - 1;
+        }
+
+        /// <summary>
+        ///     改变面向方向
+        /// </summary>
+        /// <param name="actor">角色</param>
+        /// <param name="faceFunc">面向</param>
+        /// <returns>当前事件Id</returns>
+        public int ChangeFaceToByExpression(Actor actor, Func<Actor.Face> faceFunc)
+        {
+            _actionList.Add(new ScriptAction("ChangeFaceTo")
+            {
+                onStart = () =>
+                {
+                    var face = faceFunc();
+                    actor.faceTo = face;
+                }
             });
             return _actionList.Count - 1;
         }
@@ -189,6 +259,26 @@ namespace RPGTool.GameScripts
             {
                 onStart = () =>
                 {
+                    if (trigger != null)
+                        trigger.enabled = enable;
+                }
+            });
+            return _actionList.Count - 1;
+        }
+
+        /// <summary>
+        ///     设置触发是否可用
+        /// </summary>
+        /// <param name="trigger">触发器</param>
+        /// <param name="enableFunc">是否可用</param>
+        /// <returns>当前事件Id</returns>
+        public int SetTriggerEnableByExpression(TriggerBase trigger, Func<bool> enableFunc)
+        {
+            _actionList.Add(new ScriptAction("SetTriggerEnable")
+            {
+                onStart = () =>
+                {
+                    var enable = enableFunc();
                     if (trigger != null)
                         trigger.enabled = enable;
                 }
@@ -228,6 +318,22 @@ namespace RPGTool.GameScripts
             });
             return _actionList.Count - 1;
         }
+        
+        /// <summary>
+        ///     等待指定时间
+        /// </summary>
+        /// <param name="time">等待的时间（单位为秒）</param>
+        /// <returns>当前事件Id</returns>
+        public int WaitByExpression(Func<float> timeFunc)
+        {
+            float time = 0;
+            _actionList.Add(new ScriptAction("Wait")
+            {
+                onStart = () => { time = timeFunc(); },
+                onUpdate = () => (time -= Time.deltaTime) < 0
+            });
+            return _actionList.Count - 1;
+        }
 
         /// <summary>
         ///     设置数据库变量
@@ -256,17 +362,17 @@ namespace RPGTool.GameScripts
         /// <param name="key">键值</param>
         /// <param name="valueExpression">值表达式（在执行到的时候进行运算）</param>
         /// <returns>当前事件Id</returns>
-        public int SetDatabaseValue(string key, Func<int?> valueExpression)
+        public int SetDatabaseValueByExpression(string key, Func<int?> valueExpression)
         {
             _actionList.Add(new ScriptAction("SetDatabaseValue")
             {
                 onStart = () =>
                 {
-                    var result = valueExpression();
-                    if (result == null)
+                    var value = valueExpression();
+                    if (value == null)
                         SaveManager.database.Remove(key);
                     else
-                        SaveManager.database[key] = result.Value;
+                        SaveManager.database[key] = value.Value;
                 }
             });
             return _actionList.Count - 1;
@@ -282,12 +388,7 @@ namespace RPGTool.GameScripts
         {
             _actionList.Add(new ScriptAction("JumpTo")
             {
-                onStart = () =>
-                {
-                    _runPos = where;
-                    if (_actionList[(int)_runPos] != null)
-                        _actionList[(int)_runPos].onStart();
-                }
+                onStart = () => SetPos(where)
             });
             return _actionList.Count - 1;
         }
@@ -325,9 +426,9 @@ namespace RPGTool.GameScripts
             _actionList.Add(new ScriptAction("ShowSubwindow")
             {
                 onStart = () => { subwindowObj = Instantiate(subwindowPrefab); },
-                onUpdate = () => subwindowObj.GetComponent<Subwindow>().closed
+                onUpdate = () => subwindowObj.GetComponent<Subwindow>().Closed
             });
-            If(() => subwindowObj.GetComponent<Subwindow>().result, isTrue, isFalse);
+            If(() => subwindowObj.GetComponent<Subwindow>().Result, isTrue, isFalse);
 
             return pos;
         }
@@ -378,6 +479,5 @@ namespace RPGTool.GameScripts
             });
             return _actionList.Count - 1;
         }
-
     }
 }

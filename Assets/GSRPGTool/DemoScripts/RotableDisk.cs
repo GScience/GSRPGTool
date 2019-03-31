@@ -6,12 +6,14 @@ using UnityEngine.Experimental.UIElements;
 
 public class RotableDisk : MonoBehaviour
 {
+    public float startPos;
+
     private bool _isRotating;
     private Vector3 _lastPos = Vector3.zero;
 
     void Start()
     {
-        
+        transform.rotation = Quaternion.AngleAxis(startPos, Vector3.forward);
     }
 
     // Update is called once per frame
