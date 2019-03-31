@@ -34,7 +34,7 @@ namespace RPGTool.GameScripts
         public override int GetHashCode()
         {
             if (_actionList.Count == 0)
-                Do(null);
+                GenActionList(null);
 
             var hashCode = 0;
             foreach (var action in _actionList)
@@ -106,15 +106,19 @@ namespace RPGTool.GameScripts
             if (_isRunning)
                 return;
 
-            _actionList.Clear();
-            BlockInteraction(blockPlayerInteraction);
-            Do(trigger);
-            BlockInteraction(false);
+            GenActionList(trigger);
             _actionList[(int) _runPos].onStart();
 
             _isRunning = true;
         }
 
+        private void GenActionList(TriggerBase trigger)
+        {
+            _actionList.Clear();
+            BlockInteraction(blockPlayerInteraction);
+            Do(trigger);
+            BlockInteraction(false);
+        }
         public abstract void Do(TriggerBase trigger);
 
         /// <summary>
