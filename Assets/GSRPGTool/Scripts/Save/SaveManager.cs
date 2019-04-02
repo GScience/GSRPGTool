@@ -33,6 +33,7 @@ namespace RPGTool.Save
         public void Delete()
         {
             Directory.Delete(SaveDir, true);
+            database.Clear();
             SceneManager.LoadScene(0);
         }
         private void Awake()
