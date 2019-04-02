@@ -78,7 +78,7 @@ namespace RPGTool.DemoScripts
                             MoveActor(GameMapManager.gameMapManager.player, Actor.Face.Left));
                     });
                 ChangeFaceTo(GameMapManager.gameMapManager.player, Actor.Face.Up);
-                ShowSubwindow("Doordiskwindow", () =>
+                ShowSubwindow<Doordisk>("Doordiskwindow", () =>
                 {
                     MoveActor(GameMapManager.gameMapManager.player, Actor.Face.Right);
                     ChangeFaceTo(GameMapManager.gameMapManager.player, Actor.Face.Left);
@@ -88,6 +88,7 @@ namespace RPGTool.DemoScripts
                     ChangeFaceTo(GetComponent<Actor>(), Actor.Face.Right);
                     SetDatabaseValue("Guard." + name + ".opendoor.finished", 1);
                     SetDatabaseValue("Guard." + name + ".opendoor.usedKey", null);
+                    ShowChapterInfo("序章 测试", "只是用来测试");
                 }, () =>
                 {
                     MoveActor(GameMapManager.gameMapManager.player, Actor.Face.Right);

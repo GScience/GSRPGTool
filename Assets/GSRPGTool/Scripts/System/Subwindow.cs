@@ -24,7 +24,7 @@ namespace RPGTool.System
         public Canvas canvas;
         [HideInInspector] public bool Result { get; protected set; }
 
-        void Awake()
+        protected virtual void Awake()
         {
             canvas = GetComponent<Canvas>();
             fader = GetComponent<CanvasGroup>();

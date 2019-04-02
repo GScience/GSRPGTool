@@ -60,7 +60,7 @@ namespace RPGTool.GameScripts
 
             //真
             var trueBeginPos = (uint)_actionList.Count;
-            isTrue();
+            isTrue?.Invoke();
             var trueEndPos = (uint)_actionList.Count;
             _actionList.Add(null);
 
@@ -318,7 +318,7 @@ namespace RPGTool.GameScripts
             });
             return _actionList.Count - 1;
         }
-        
+
         /// <summary>
         ///     等待指定时间
         /// </summary>
@@ -418,14 +418,18 @@ namespace RPGTool.GameScripts
         /// <param name="isFalse">子窗口返回假</param>
         /// <param name="subwindowPrefabName">子窗口预制体</param>
         /// <returns>当前事件Id</returns>
-        public int ShowSubwindow(string subwindowPrefabName, Action isTrue, Action isFalse)
+        public int ShowSubwindow<T>(string subwindowPrefabName, Action isTrue = null, Action isFalse = null, Action<T> onOpen = null) where T : Subwindow
         {
             var pos = _actionList.Count;
             var subwindowPrefab = Resources.Load<GameObject>(subwindowPrefabName);
             GameObject subwindowObj = null;
             _actionList.Add(new ScriptAction("ShowSubwindow")
             {
-                onStart = () => { subwindowObj = Instantiate(subwindowPrefab); },
+                onStart = () =>
+                {
+                    subwindowObj = Instantiate(subwindowPrefab);
+                    onOpen?.Invoke(subwindowObj.GetComponent<T>());
+                },
                 onUpdate = () => subwindowObj.GetComponent<Subwindow>().Closed
             });
             If(() => subwindowObj.GetComponent<Subwindow>().Result, isTrue, isFalse);
