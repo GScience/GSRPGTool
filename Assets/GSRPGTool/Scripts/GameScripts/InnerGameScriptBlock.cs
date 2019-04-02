@@ -405,8 +405,8 @@ namespace RPGTool.GameScripts
             var pos = 0;
             _actionList.Add(new ScriptAction("AddMessage")
             {
-                onStart = () => { pos = GameMapManager.gameMapManager.mainDialog.AddMessage(msg); },
-                onUpdate = () => !block || pos + msg.Length < GameMapManager.gameMapManager.mainDialog.ShownMsgPos
+                onStart = () => { pos = GameMapManager.gameMapManager.MainDialog.AddMessage(msg); },
+                onUpdate = () => !block || pos + msg.Length < GameMapManager.gameMapManager.MainDialog.ShownMsgPos
             });
             return _actionList.Count - 1;
         }
@@ -453,21 +453,21 @@ namespace RPGTool.GameScripts
                 {
                     SceneManager.sceneLoaded += (arg0, arg1) =>
                     {
-                        GameMapManager.gameMapManager.fader.FadeIn();
+                        GameMapManager.gameMapManager.Fader.FadeIn();
                         GameMapManager.gameMapManager.player.GridTransform.position = pos;
                         GameMapManager.gameMapManager.player.faceTo = faceTo;
                     };
 
-                    GameMapManager.gameMapManager.fader.FadeOut();
+                    GameMapManager.gameMapManager.Fader.FadeOut();
                 },
                 onUpdate = () =>
                 {
-                    if (GameMapManager.gameMapManager.fader.IsFinished)
+                    if (GameMapManager.gameMapManager.Fader.IsFinished)
                     {
                         //移动到下一个
                         if (string.IsNullOrEmpty(sceneName))
                         {
-                            GameMapManager.gameMapManager.fader.FadeIn();
+                            GameMapManager.gameMapManager.Fader.FadeIn();
                             return true;
                         }
                         ++_runPos;

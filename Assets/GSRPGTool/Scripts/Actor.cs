@@ -192,7 +192,7 @@ namespace RPGTool
             var directionVector = FaceToVector(faceTo);
             if (!isKinematic &&
                 !CanMoveIn(
-                    GameMapManager.gameMapManager.infoTilemap.GetTileInfo(GridTransform.position + directionVector)))
+                    GameMapManager.gameMapManager.InfoTilemap.GetTileInfo(GridTransform.position + directionVector)))
                 return;
             GridTransform.Move(directionVector, 1 / speed);
             expectNextMoveDirection = null;
@@ -304,7 +304,7 @@ namespace RPGTool
             }
 
             //脚下始终不可通过
-            GameMapManager.gameMapManager.infoTilemap.SetTileInfo(GridTransform.position, true);
+            GameMapManager.gameMapManager.InfoTilemap.SetTileInfo(GridTransform.position, true);
         }
 
         /// <summary>
@@ -316,12 +316,12 @@ namespace RPGTool
             //新的站位
             foreach (var pos in newJointPosition)
                 if (!JointPositions.Contains(pos))
-                    GameMapManager.gameMapManager.infoTilemap.SetTileInfo(pos, true);
+                    GameMapManager.gameMapManager.InfoTilemap.SetTileInfo(pos, true);
 
             //旧的站位
             foreach (var pos in JointPositions)
                 if (!newJointPosition.Contains(pos))
-                    GameMapManager.gameMapManager.infoTilemap.SetTileInfo(pos, false);
+                    GameMapManager.gameMapManager.InfoTilemap.SetTileInfo(pos, false);
 
             JointPositions = newJointPosition;
         }

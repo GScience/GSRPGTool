@@ -137,11 +137,11 @@ namespace RPGTool.Tiles
             if (GameMapManager.gameMapManager != null)
             {
                 var currentTileInfo =
-                    GameMapManager.gameMapManager.infoTilemap.GetTileInfo(new Vector2Int(position.x, position.y));
+                    GameMapManager.gameMapManager.InfoTilemap.GetTileInfo(new Vector2Int(position.x, position.y));
 
                 if (currentTileInfo.tileType == InfoTile.TileType.Ground ||
                     currentTileInfo.tileType == InfoTile.TileType.Void)
-                    GameMapManager.gameMapManager.infoTilemap.SetTileInfo(new Vector2Int(position.x, position.y),
+                    GameMapManager.gameMapManager.InfoTilemap.SetTileInfo(new Vector2Int(position.x, position.y),
                         tileType,
                         currentTileInfo.hasActor);
             }

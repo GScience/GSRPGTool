@@ -11,7 +11,6 @@ namespace RPGTool
         Interaction,
         End
     }
-    [ExecuteInEditMode]
     public class GameMapManager : MonoBehaviour
     {
         private static GameMapManager _gameMapManager;
@@ -25,18 +24,73 @@ namespace RPGTool
         /// <summary>
         ///     隐藏用canvas
         /// </summary>
-        public Fader fader;
+        public Fader Fader
+        {
+            get
+            {
+                if (_mainFader == null
+#if UNITY_EDITOR 
+                    && Application.isPlaying
+#endif
+                    )
+                {
+                    var mainFader = Instantiate(Resources.Load<GameObject>("FaderCanvas"), transform);
+                    mainFader.name = "FaderCanvas";
+                    _mainFader = mainFader.GetComponentInChildren<Fader>();
+                }
+
+                return _mainFader;
+            }
+        }
+
+        private Fader _mainFader;
 
         /// <summary>
         ///     地图状态
         /// </summary>
-        public InfoTilemap infoTilemap;
+        public InfoTilemap InfoTilemap
+        {
+            get
+            {
+                if (_infoTilemap == null
+#if UNITY_EDITOR
+                    && Application.isPlaying
+#endif
+                    )
+                {
+                    var infoTimemapObj = new GameObject("InfoTilemap", typeof(InfoTilemap));
+                    infoTimemapObj.transform.parent = transform;
+                    _infoTilemap = infoTimemapObj.GetComponent<InfoTilemap>();
+                }
+                return _infoTilemap;
+            }
+        }
+
+        private InfoTilemap _infoTilemap;
 
         /// <summary>
         ///     对话框
         /// </summary>
-        public Dialog mainDialog;
+        public Dialog MainDialog
+        {
+            get
+            {
+                if (_mainDialog == null
+#if UNITY_EDITOR 
+                    && Application.isPlaying
+#endif
+                    )
+                {
+                    var mainDialog = Instantiate(Resources.Load<GameObject>("DialogCanvas"), transform);
+                    mainDialog.name = "DialogCanvas";
+                    _mainDialog = mainDialog.GetComponentInChildren<Dialog>();
+                }
 
+                return _mainDialog;
+            }
+        }
+
+        private Dialog _mainDialog;
         /// <summary>
         ///     玩家
         /// </summary>
@@ -61,7 +115,7 @@ namespace RPGTool
         /// </summary>
         public bool IgnorePlayerInteract
         {
-            get => mainDialog.PrintingPaused || mainDialog.Message.Length != 0 || //对话框自动屏蔽
+            get => MainDialog.PrintingPaused || MainDialog.Message.Length != 0 || //对话框自动屏蔽
                    _ignorePlayerInteract; //手动屏蔽
             set => _ignorePlayerInteract = value;
         }
@@ -105,11 +159,7 @@ namespace RPGTool
         /// </summary>
         private void UpdatePlayerInteract()
         {
-            if (player == null
-#if UNITY_EDITOR
-                || !Application.isPlaying
-#endif
-            )
+            if (player == null)
                 return;
 
             PlayerPosition = player.GridTransform.position;
