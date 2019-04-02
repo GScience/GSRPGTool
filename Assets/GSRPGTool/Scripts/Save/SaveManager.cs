@@ -30,6 +30,11 @@ namespace RPGTool.Save
             }
         }
 
+        public void Delete()
+        {
+            Directory.Delete(SaveDir, true);
+            SceneManager.LoadScene(0);
+        }
         private void Awake()
         {
             Load("Save0");
@@ -37,8 +42,8 @@ namespace RPGTool.Save
             LoadCurrentScene();
 
             //创建目录
-            if (!Directory.Exists(Application.persistentDataPath + "/" + SaveName))
-                Directory.CreateDirectory(Application.persistentDataPath + "/" + SaveName);
+            if (!Directory.Exists(SaveDir))
+                Directory.CreateDirectory(SaveDir);
 
             DontDestroyOnLoad(this);
 

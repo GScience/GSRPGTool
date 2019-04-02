@@ -13,5 +13,10 @@ namespace RPGTool.Save
                 sceneId = 1;
             SceneManager.LoadScene(sceneId);
         }
+
+        public void ClearGame()
+        {
+            SaveManager.saveManager.Delete();
+        }
     }
 }

@@ -471,11 +471,7 @@ namespace RPGTool.GameScripts
                             return true;
                         }
                         ++_runPos;
-#if UNITY_EDITOR
-                        if (SaveManager.saveManager)
-#endif
-                            SaveManager.saveManager.SaveCurrentScene();
-                        SceneManager.LoadScene(sceneName);
+                        GameMapManager.gameMapManager.SwitchToScene(sceneName);
                     }
 
                     return false;

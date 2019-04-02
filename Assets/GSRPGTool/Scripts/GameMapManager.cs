@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using RPGTool.Save;
 using RPGTool.System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace RPGTool
 {
@@ -176,6 +178,23 @@ namespace RPGTool
                 else if (PlayerInputs[(int)PlayerInput.Right])
                     player.expectNextMoveDirection = Actor.Face.Right;
             }
+        }
+
+        /// <summary>
+        /// 切换到场景
+        /// </summary>
+        /// <param name="sceneName">场景名，如果为空则切换到开始</param>
+        public void SwitchToScene(string sceneName)
+        {
+#if UNITY_EDITOR
+            if (SaveManager.saveManager)
+#endif
+                SaveManager.saveManager.SaveCurrentScene();
+
+            if (string.IsNullOrEmpty(sceneName))
+                SceneManager.LoadScene(0);
+            else
+                SceneManager.LoadScene(sceneName);
         }
 
         public static bool GetInput(PlayerInput input)
